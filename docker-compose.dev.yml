@@ -1,0 +1,19 @@
+version: "3.5"
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.dev
+    ports:
+      - "9000:8080"
+    container_name: se06-api
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo
+    restart: always
+    volumes:
+      - ./docker/db:/app/db
+    ports:
+      - "27017:27017"
+    container_name: mongodb
