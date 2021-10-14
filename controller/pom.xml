@@ -8,38 +8,25 @@
         <version>2.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <packaging>jar</packaging>
     <groupId>appx.s.learn</groupId>
-    <artifactId>SE06</artifactId>
+    <artifactId>controller</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>SE06</name>
-    <packaging>pom</packaging>
-    <modules>
-        <module>controller</module>
-    </modules>
-
-    <description>SE06</description>
+    <name>controller</name>
+    <description>controller</description>
     <properties>
         <java.version>11</java.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>appx.s.learn</groupId>
-            <artifactId>controller</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.firebase</groupId>
-            <artifactId>firebase-admin</artifactId>
-            <version>8.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -52,14 +39,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <profiles>
-                        <profile>dev</profile>
-                        <profile>prod</profile>
-                    </profiles>
-                    <mainClass>appx.s.learn.se06.Se06Application</mainClass>
-                </configuration>
-
             </plugin>
         </plugins>
     </build>
