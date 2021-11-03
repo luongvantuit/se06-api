@@ -1,6 +1,5 @@
 package appx.s.learn.se06.firebase;
 
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -11,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Service
-public class FirebaseInitializationApp {
+public class FirebaseInitializeApp {
 
     @PostConstruct
     void initialization() throws IOException {
