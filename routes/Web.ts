@@ -1,5 +1,5 @@
-class Web {
+import { Router } from "express";
 
-}
+const Web: Router = Router();
 
-export default new Web;
+export default Web;

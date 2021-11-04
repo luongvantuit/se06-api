@@ -1,11 +1,8 @@
 import { Router } from "express";
-import Account from "../controllers/AccountController";
+import AccountController from "../controllers/AccountController";
 
-const API = Router();
+const API: Router = Router();
 
-API.post('/account/check-email-existed', Account.index)
-
-
-
+API.post('/account/check-email-existed', AccountController.index);
 
 export default API;
