@@ -12,5 +12,3 @@
 *-lock.json
 *.lock
 
-# Docker
-/mongo/db
