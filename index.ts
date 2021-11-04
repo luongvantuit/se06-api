@@ -1,4 +1,4 @@
-import App from "./App";
+import App from "./providers/App";
 import dotenv from 'dotenv'
 
 dotenv.config();
