@@ -3,12 +3,12 @@ import API from "../routes/API";
 import Web from "../routes/Web";
 
 class Routers {
-    public mountAPI(express: Application): Application {
-        return express.use('/api', API)
+    public mountAPI(_express: Application): Application {
+        return _express.use('/api', API)
     }
 
-    public mountWeb(express: Application): Application {
-        return express.use('/', Web)
+    public mountWeb(_express: Application): Application {
+        return _express.use('/', Web)
     }
 }
 

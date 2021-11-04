@@ -7,8 +7,6 @@ class Locals {
     public config() {
         dotenv.config();
 
-
-
         var port: number;
         try {
             port = parseInt(process.env.PORT ?? '8080');
@@ -17,18 +15,14 @@ class Locals {
             port = 8080;
         }
 
-
-
-
-
         return {
             port,
         };
     }
 
-    public initialization(express: Application): Application {
-        express.locals.app = this.config();
-        return express;
+    public initialization(_express: Application): Application {
+        _express.locals.app = this.config();
+        return _express;
     }
 
 }

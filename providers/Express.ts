@@ -1,4 +1,5 @@
 import express from 'express'
+import Kernal from '../middlewares/Kernal';
 import Log from '../middlewares/Log';
 import Locals from './Locals';
 import Routes from './Routes';
@@ -11,15 +12,19 @@ class Express {
     constructor() {
         this.app = express();
         this.mountDotENV();
+        this.mountMiddlewares();
         this.mountRoutes();
     }
 
-    public mountDotENV(): void {
-        this.app = Locals.initialization(this.app)
+    private mountDotENV(): void {
+        this.app = Locals.initialization(this.app);
     }
 
+    private mountMiddlewares(): void {
+        this.app = Kernal.initialization(this.app);
+    }
 
-    public mountRoutes(): void {
+    private mountRoutes(): void {
         this.app = Routes.mountAPI(this.app);
         this.app = Routes.mountWeb(this.app);
     }

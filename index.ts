@@ -2,4 +2,4 @@ import App from "./providers/App";
 
 
 
-App.initialization();
+App.loadServer();

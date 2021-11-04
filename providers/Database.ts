@@ -1,5 +1,8 @@
 class Database {
 
+    public initialazation(): void {
+
+    }
 }
 
 
