@@ -3,11 +3,9 @@ import IResponse from "../interfaces/vendors/IResponse";
 
 
 class Account {
-    
-    public static check(req: IRequest, res: IResponse): void {
-        if (req.method === 'POST') {
-             
-        }
+
+    public static index(req: IRequest, res: IResponse): void {
+       
     }
 }
 

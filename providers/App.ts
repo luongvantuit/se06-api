@@ -1,10 +1,6 @@
-import express from 'express';
-
 class App {
 
-    app = express();
-
-    public initializeApp(): void {
+    public initialization(): void {
         
     }
 }

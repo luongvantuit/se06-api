@@ -13,4 +13,4 @@
 *.lock
 
 # Docker
-/mongo/db
+/mongodb/db
