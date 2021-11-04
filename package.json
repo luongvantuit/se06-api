@@ -14,9 +14,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "firebase-admin": "^10.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lusca": "^1.7.0",
     "mongodb": "^4.1.4",
     "nodemon": "^2.0.14",
     "ts-node": "^10.4.0",
