@@ -13,7 +13,8 @@ services:
     image: mongo
     restart: always
     volumes:
-      - ./mongodb/db:/app/db
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+      - ./mongodb/db:/var/lib/mongo
     ports:
       - "27017:27017"
     container_name: mongodb
