@@ -4,7 +4,7 @@ import Database from "./Database";
 
 class App {
 
-    public loadConfig(): void {
+    public loadConfiguration(): void {
         dotenv.config();
     }
 
@@ -15,7 +15,7 @@ class App {
     public loadDatabase(): void {
         Database.initialazation();
     }
-    
+
 }
 
 export default new App;
