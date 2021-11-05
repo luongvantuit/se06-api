@@ -1,6 +1,5 @@
 import express from 'express'
 import Kernal from '../middlewares/Kernal';
-import Log from '../middlewares/Log';
 import Locals from './Locals';
 import Routes from './Routes';
 
@@ -34,7 +33,7 @@ class Express {
         this.app.listen(
             Locals.config().port,
             () => {
-                Log.default("Initialzation Server, Success!")
+
             }
         )
     }

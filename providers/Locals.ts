@@ -23,9 +23,12 @@ class Locals {
             isCORSEnable = false;
         }
 
+        const URL: string = process.env.APP_URL ?? `http://localhost:${port}`
+
         return {
             port,
             isCORSEnable,
+            URL,
         };
     }
 
