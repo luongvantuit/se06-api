@@ -15,8 +15,17 @@ class Locals {
             port = 8080;
         }
 
+        var isCORSEnable: boolean;
+        try {
+            isCORSEnable = Boolean(process.env.CORS_ENABLE ?? 'fasle');
+        } catch (error) {
+            Log.default(error);
+            isCORSEnable = false;
+        }
+
         return {
             port,
+            isCORSEnable,
         };
     }
 

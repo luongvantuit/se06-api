@@ -1,7 +1,7 @@
 import App from "./providers/App";
 import * as cluster from 'cluster';
 import * as os from 'os'
-import NativeEvent from "./app/Core/NativeEvent";
+import ProcessEvent from "./app/core/ProcessEvent";
 
 if (cluster.default.isMaster) {
 
@@ -13,7 +13,7 @@ if (cluster.default.isMaster) {
         cluster.default.fork();
     })
 
-    NativeEvent.cluster(cluster.default);
+    ProcessEvent.cluster(cluster.default);
 
 } else {
 
