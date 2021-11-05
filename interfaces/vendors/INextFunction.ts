@@ -1,5 +1,5 @@
 import { NextFunction } from "express";
 
-interface INextFunction extends NextFunction { }
+interface INextFunction extends NextFunction {}
 
 export default INextFunction;

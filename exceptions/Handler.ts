@@ -1,6 +1,3 @@
-class Handler {
+class Handler {}
 
-}
-
-
-export default new Handler;
+export default new Handler();

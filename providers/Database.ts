@@ -1,9 +1,5 @@
 class Database {
-
-    public initialazation(): void {
-
-    }
+  public initialazation(): void {}
 }
 
-
-export default new Database;
+export default new Database();
