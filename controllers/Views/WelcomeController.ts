@@ -5,7 +5,7 @@ import * as path from 'path';
 class WelcomeController {
 
     public async index(req: IRequest, res: IResponse): Promise<void> {
-        res.sendFile(path.join(__dirname, "../../resources/views/welcome.html"));
+        res.render('welcome')
     }
 }
 
