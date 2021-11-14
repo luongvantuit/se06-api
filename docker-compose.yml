@@ -10,11 +10,10 @@ services:
     depends_on:
       - mongodb
   mongodb:
-    image: mongo
+    image: mongo:latest
     restart: always
     volumes:
-      - ./mongodb/mongod.conf:/etc/mongod.conf
-      - ./mongodb/db:/var/lib/mongo
+      - "./db:/data/db"
     ports:
       - "27017:27017"
     container_name: mongodb
