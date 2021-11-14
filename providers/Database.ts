@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb'
-import Log from '../middlewares/Log';
 import Locals from './Locals';
 
 class Database {
@@ -7,8 +6,10 @@ class Database {
   client: MongoClient = new MongoClient(Locals.config().mongodbURL);
 
   public async initialazation() {
-    await this.client.connect();
-    Log.default(this.client.db());
+    await this.client.connect((error) => {
+      if (error)
+        this.client.close();
+    });
   }
 }
 

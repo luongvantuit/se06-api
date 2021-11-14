@@ -23,7 +23,7 @@ class Locals {
     }
 
     const URL: string = process.env.APP_URL ?? `http://localhost:${port}`;
-    const mongodbURL: string = process.env.MONGODB_URL ?? 'mongodb://localhost:27017/data'
+    const mongodbURL: string = process.env.MONGODB_URL ?? 'mongodb://localhost:27017/'
 
     return {
       port,
