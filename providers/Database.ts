@@ -1,16 +1,17 @@
-import { MongoClient } from 'mongodb'
 import Locals from './Locals';
+import mongoose from 'mongoose';
+import Log from '../middlewares/Log';
 
 class Database {
 
-  client: MongoClient = new MongoClient(Locals.config().mongodbURL);
-
-  public async initialazation() {
-    await this.client.connect((error) => {
-      if (error)
-        this.client.close();
-    });
-  }
+    public async initialazation() {
+        await mongoose.connect(Locals.config().mongodbURL, {
+        }, async (error: mongoose.CallbackError) => {
+            Log.default(error)
+            if (error !== null)
+                await mongoose.disconnect()
+        });
+    }
 }
 
-export default new Database();
+export default new Database;

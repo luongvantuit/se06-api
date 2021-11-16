@@ -1,7 +1,7 @@
 class Log {
-  public default(message: any): void {
-    console.log(message);
-  }
+    public default(message: any): void {
+        console.log(message);
+    }
 }
 
-export default new Log();
+export default new Log;
