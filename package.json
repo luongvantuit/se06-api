@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./index.ts",
-    "build": "tsc",
-    "prestart": "rm -rf ./build && tsc && cp -R ./resources ./build/resources",
+    "build": "rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json",
+    "prestart": "rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json",
     "start": "node ./build/index.js",
-    "predocker": "cat .env.docker >> .env && rm -rf ./build && tsc && cp -R ./resources ./build/resources",
+    "predocker": "cat .env.docker >> .env && rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json",
     "docker": "node ./build/index.js"
   },
   "keywords": [],
