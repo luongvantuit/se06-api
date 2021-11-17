@@ -4,3 +4,5 @@ interface IDeliverySchedule {
     ShopOwner: String;
     Date: Date;
 }
+
+export default IDeliverySchedule;

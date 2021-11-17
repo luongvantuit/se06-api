@@ -1,6 +1,5 @@
 import Locals from './Locals';
 import mongoose from 'mongoose';
-import Log from '../middlewares/Log';
 
 class Database {
 

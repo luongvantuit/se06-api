@@ -12,3 +12,5 @@ interface IOrder {
     UserID: String;
     ShopOwner: String;
 }
+
+export default IOrder;
