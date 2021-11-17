@@ -4,4 +4,4 @@ class RateController extends IController {
 
 }
 
-export default RateController;
+export default new RateController;

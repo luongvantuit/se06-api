@@ -7,7 +7,6 @@ class Database {
     public async initialazation() {
         await mongoose.connect(Locals.config().mongodbURL, {
         }, async (error: mongoose.CallbackError) => {
-            Log.default(error)
             if (error !== null)
                 await mongoose.disconnect()
         });

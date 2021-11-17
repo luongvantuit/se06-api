@@ -4,4 +4,4 @@ class TagController extends IController {
 
 }
 
-export default TagController;
+export default new TagController;

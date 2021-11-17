@@ -1,8 +1,11 @@
 interface IUser {
-    name: string;
-    avatarURL: string;
-    email: string;
-    userID: string;
+    Name: String;
+    Email: String;
+    NumberPhone: String;
+    UID: String;
+    URLPhoto: String;
+    Status: Number;
+    Country: Number;
 }
 
 export default IUser;
