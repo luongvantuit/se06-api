@@ -1,11 +1,13 @@
+import { ParamsDictionary } from "express-serve-static-core";
+import { ParsedQs } from "qs";
+import IController from "../../interfaces/vendors/IController";
 import IRequest from "../../interfaces/vendors/IRequest";
 import IResponse from "../../interfaces/vendors/IResponse";
-import * as path from 'path';
 
-class WelcomeController {
+class WelcomeController extends IController {
 
-    public async index(req: IRequest, res: IResponse): Promise<void> {
-        res.render('welcome')
+    public index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): void {
+        res.render('welcome');
     }
 }
 
