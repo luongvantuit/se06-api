@@ -1,8 +1,8 @@
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import IController from "../../interfaces/vendors/IController";
-import IRequest from "../../interfaces/vendors/IRequest";
-import IResponse from "../../interfaces/vendors/IResponse";
+import IController from "../interfaces/vendors/IController";
+import IRequest from "../interfaces/vendors/IRequest";
+import IResponse from "../interfaces/vendors/IResponse";
 
 class WelcomeController extends IController {
 

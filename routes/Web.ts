@@ -1,5 +1,5 @@
 import { Router } from "express";
-import WelcomeController from "../controllers/Views/WelcomeController";
+import WelcomeController from "../controllers/WelcomeController";
 
 const Web: Router = Router();
 
