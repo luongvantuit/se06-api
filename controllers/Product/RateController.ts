@@ -76,7 +76,7 @@ class RateController extends IController {
      */
 
     public async store(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const token = req.headers['token'];
+        const { token } = await req.headers;
         // Check null token in header if null return state unauthorized
         if (token === undefined)
             return res.status(HttpStatusCode.UNAUTHORIZED)
@@ -88,9 +88,9 @@ class RateController extends IController {
         try {
             // Valid ID Token form header
             const auth = await Firebase.auth().verifyIdToken(token.toString(), true);
-            const { productID } = req.params;
+            const { productID } = await req.params;
             // Valid body property message & rate
-            const { message, rate } = req.body;
+            const { message, rate } = await req.body;
             if (message === undefined || rate === undefined)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
