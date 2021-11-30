@@ -1,8 +1,8 @@
 import { Router } from "express";
-import WelcomeController from "../controllers/WelcomeController";
+import HomeController from "../controllers/Views/HomeController";
 
 const Web: Router = Router();
 
-Web.get("/", WelcomeController.index);
+Web.get("/", HomeController.index);
 
 export default Web;

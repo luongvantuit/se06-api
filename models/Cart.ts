@@ -6,8 +6,8 @@ interface ICartModel extends ICart, Document {
 }
 
 const CartSchema: Schema = new Schema({
-    UserID: { type: String, required: true },
-    ProductID: { type: String, required: true }
+    userID: { type: String, required: true },
+    productID: { type: String, required: true }
 })
 
 const Cart: Model<ICartModel> = model<ICartModel>('Cart', CartSchema);

@@ -1,6 +1,7 @@
 interface IShop {
-    Name: String;
-    UserID: String;
+    name: String;
+    userID: String;
+    address: String
 }
 
 export default IShop;

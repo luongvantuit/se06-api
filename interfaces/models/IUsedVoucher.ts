@@ -1,7 +1,6 @@
 interface IUsedVoucher {
-    VoucherID: String;
-    UserID: String;
-    ShopOwnerID: String;
+    voucherID: String;
+    userID: String;
 }
 
 export default IUsedVoucher;

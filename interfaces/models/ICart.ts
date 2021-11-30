@@ -1,6 +1,6 @@
 interface ICart {
-    UserID: String;
-    ProductID: String;
+    userID: String;
+    productID: String;
 }
 
 export default ICart;

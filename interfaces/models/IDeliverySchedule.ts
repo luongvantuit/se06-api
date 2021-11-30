@@ -1,8 +1,7 @@
 interface IDeliverySchedule {
-    OrderID: String;
-    Status: String;
-    ShopOwner: String;
-    Date: Date;
+    orderID: String;
+    status: String;
+    date: Date;
 }
 
 export default IDeliverySchedule;

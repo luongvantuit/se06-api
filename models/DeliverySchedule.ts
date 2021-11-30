@@ -6,10 +6,9 @@ interface IDeliveryScheduleModel extends IDeliverySchedule, Document {
 }
 
 const DeliveryScheduleSchema: Schema = new Schema({
-    OrderID: { type: String },
-    Status: { type: String },
-    ShopOwner: { type: String },
-    Date: { type: Date },
+    orderID: { type: String },
+    status: { type: String },
+    date: { type: Date },
 })
 
 const DeliverySchedule: Model<IDeliveryScheduleModel> = model<IDeliveryScheduleModel>('DeliverySchedule', DeliveryScheduleSchema);

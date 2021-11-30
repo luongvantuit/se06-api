@@ -6,9 +6,8 @@ interface IUsedVoucherModel extends IUsedVoucher, Document {
 }
 
 const UsedVoucherSchema: Schema = new Schema({
-    VoucherID: { type: String },
-    UserID: { type: String },
-    ShopOwnerID: { type: String },
+    voucherID: { type: String },
+    userID: { type: String },
 })
 
 const UsedVoucher: Model<IUsedVoucherModel> = model<IUsedVoucherModel>('UsedVoucher', UsedVoucherSchema);

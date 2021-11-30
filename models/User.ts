@@ -6,13 +6,15 @@ interface IUserModel extends IUser, Document {
 }
 
 const UserSchema: Schema = new Schema({
-    Name: { type: String },
-    Email: { type: String, required: true, unique: true },
-    NumberPhone: { type: String },
-    UID: { type: String, required: true, unique: true },
-    URLPhoto: { type: String },
-    Status: { type: Number },
-    Country: { type: Number },
+    name: { type: String },
+    email: { type: String, required: true, unique: true },
+    numberPhone: { type: String },
+    uid: { type: String, required: true, unique: true },
+    photoURL: { type: String },
+    status: { type: Number },
+    country: { type: Number },
+    birthday: { type: Date },
+    bio: { type: String },
 })
 
 const User: Model<IUserModel> = model<IUserModel>('User', UserSchema);

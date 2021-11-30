@@ -1,6 +1,6 @@
 interface ITag {
-    Tag: String;
-    ProductID: String;
+    tag: String;
+    productID: String;
 }
 
 export default ITag;

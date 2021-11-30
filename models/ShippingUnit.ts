@@ -7,8 +7,8 @@ interface IShippingUnitModel extends IShippingUnit, Document {
 
 
 const ShippingUnitSchema: Schema = new Schema({
-    Name: { type: String },
-    Price: { type: Number },
+    name: { type: String },
+    price: { type: Number },
 })
 
 const ShippingUnit: Model<IShippingUnitModel> = model<IShippingUnitModel>('ShippingUnit', ShippingUnitSchema);
