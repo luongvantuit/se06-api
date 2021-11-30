@@ -1,11 +1,13 @@
 interface IUser {
-    Name: String;
-    Email: String;
-    NumberPhone: String;
-    UID: String;
-    URLPhoto: String;
-    Status: Number;
-    Country: Number;
+    name: String;
+    email: String;
+    numberPhone: String;
+    uid: String;
+    photoURL: String;
+    status: Number;
+    country: Number;
+    birthday: Date;
+    bio: String;
 }
 
 export default IUser;

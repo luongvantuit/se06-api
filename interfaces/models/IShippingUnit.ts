@@ -1,6 +1,6 @@
 interface IShippingUnit {
-    Name: String;
-    Price: Number;
+    name: String;
+    price: Number;
 }
 
 export default IShippingUnit;

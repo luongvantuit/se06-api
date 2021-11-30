@@ -7,11 +7,11 @@ interface IRateModel extends IRate, Document {
 
 
 const RateSchema: Schema = new Schema({
-    UserID: { type: String },
-    Message: { type: String },
-    Rate: { type: Number },
-    ProductID: { type: String },
-    Date: { type: Date },
+    userID: { type: String },
+    message: { type: String },
+    rate: { type: Number },
+    productID: { type: String },
+    date: { type: Date },
 })
 
 const Rate: Model<IRateModel> = model<IRateModel>('Rate', RateSchema);

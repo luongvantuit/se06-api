@@ -6,15 +6,15 @@ interface IProductModel extends IProduct, Document {
 }
 
 const ProductSchema: Schema = new Schema({
-    ShopID: { type: String },
-    Name: { type: String },
-    Cold: { type: Number },
-    Address: { type: String },
-    Price: { type: Number },
-    Description: { type: String },
-    Date: { type: Date },
-    Origin: { type: String },
-    Category: { type: Number },
+    shopID: { type: String },
+    name: { type: String },
+    cold: { type: Number },
+    address: { type: String },
+    price: { type: Number },
+    description: { type: String },
+    date: { type: Date },
+    origin: { type: String },
+    category: { type: Number },
 })
 
 const Product: Model<IProductModel> = model<IProductModel>('Product', ProductSchema);

@@ -1,9 +1,9 @@
 interface IRate {
-    UserID: String;
-    Message: String;
-    Rate: Number;
-    ProductID: String;
-    Date: Date;
+    userID: String;
+    message: String;
+    rate: Number;
+    productID: String;
+    date: Date;
 }
 
 export default IRate;

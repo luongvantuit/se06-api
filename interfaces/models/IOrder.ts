@@ -1,16 +1,15 @@
 interface IOrder {
-    Products: [String];
-    Date: Date;
-    Status: Number;
-    Expected: Date;
-    ShippingUnitID: String;
-    Vouchers: [String];
-    Total: Number;
-    ProductCost: Number;
-    ShippingCost: Number;
-    PlaceOfReceipt: String;
-    UserID: String;
-    ShopOwner: String;
+    products: [String];
+    date: Date;
+    status: Number;
+    expected: Date;
+    shippingUnitID: String;
+    vouchers: [String];
+    total: Number;
+    productCost: Number;
+    shippingCost: Number;
+    placeOfReceipt: String;
+    userID: String;
 }
 
 export default IOrder;

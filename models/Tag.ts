@@ -6,8 +6,8 @@ interface ITagModel extends ITag, Document {
 }
 
 const TagSchema: Schema = new Schema({
-    Tag: { type: String },
-    ProductID: { type: String },
+    tag: { type: String },
+    productID: { type: String },
 })
 
 const Tag: Model<ITagModel> = model<ITagModel>('Tag', TagSchema);

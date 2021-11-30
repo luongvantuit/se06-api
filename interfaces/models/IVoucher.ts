@@ -1,11 +1,13 @@
 interface IVoucher {
-    Category: Number;
-    CategoryProduct: Number;
-    ShippingUnitID: String;
-    Date: Date;
-    Expired: Date;
-    Amount: Number;
-    Value: Number;
+    category: Number;
+    categoryProduct: Number;
+    shippingUnitID: String;
+    date: Date;
+    expired: Date;
+    amount: Number;
+    value: Number;
+    productID: String;
+    shopID: String;
 }
 
 export default IVoucher;

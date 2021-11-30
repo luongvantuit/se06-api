@@ -1,13 +1,13 @@
 interface IProduct {
-    ShopID: String;
-    Name: String;
-    Cold: Number;
-    Address: String;
-    Price: Number;
-    Description: String;
-    Date: Date;
-    Origin: String;
-    Category: Number;
+    shopID: String;
+    name: String;
+    cold: Number;
+    address: String;
+    price: Number;
+    description: String;
+    date: Date;
+    origin: String;
+    category: Number;
 }
 
 export default IProduct;

@@ -6,13 +6,15 @@ interface IVoucherModel extends IVoucher, Document {
 }
 
 const VoucherSchema: Schema = new Schema({
-    Category: { type: Number },
-    CategoryProduct: { type: Number },
-    ShippingUnitID: { type: String },
-    Date: { type: Date },
-    Expired: { type: Date },
-    Amount: { type: Number },
-    Value: { type: Number }
+    category: { type: Number },
+    categoryProduct: { type: Number },
+    shippingUnitID: { type: String },
+    date: { type: Date },
+    expired: { type: Date },
+    amount: { type: Number },
+    value: { type: Number },
+    shopID: { type: String },
+    productID: { type: String },
 })
 
 const Voucher: Model<IVoucherModel> = model<IVoucherModel>('Voucher', VoucherSchema);

@@ -6,18 +6,17 @@ interface IOrderModel extends IOrder, Document {
 }
 
 const OrderSchema: Schema = new Schema({
-    Products: { type: [String] },
-    Date: { type: Date },
-    Status: { type: Number },
-    Expected: { type: Date },
-    ShippingUnitID: { type: String },
-    Vouchers: { type: [String] },
-    Total: { type: Number },
-    ProductCost: { type: Number },
-    ShippingCost: { type: Number },
-    PlaceOfReceipt: { type: String },
-    UserID: { type: String },
-    ShopOwner: { type: String },
+    products: { type: [String] },
+    date: { type: Date },
+    status: { type: Number },
+    expected: { type: Date },
+    shippingUnitID: { type: String },
+    vouchers: { type: [String] },
+    total: { type: Number },
+    productCost: { type: Number },
+    shippingCost: { type: Number },
+    placeOfReceipt: { type: String },
+    userID: { type: String },
 })
 
 

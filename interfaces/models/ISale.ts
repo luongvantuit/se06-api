@@ -1,8 +1,8 @@
 interface ISale {
-    ProductID: String;
-    Percentage: Number;
-    Date: Date;
-    Expried: Date;
+    productID: String;
+    percentage: Number;
+    date: Date;
+    expried: Date;
 }
 
 export default ISale;
