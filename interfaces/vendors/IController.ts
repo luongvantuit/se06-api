@@ -1,6 +1,11 @@
 import IRequest from "./IRequest";
 import IResponse from "./IResponse";
 
+/**
+ * @author Lương Văn Tú
+ * abstract class api controller
+ */
+
 abstract class IController {
     /**
      * METHOD GET
