@@ -6,6 +6,7 @@ import IBaseResponse from "../../interfaces/vendors/IBaseResponse";
 import IController from "../../interfaces/vendors/IController";
 import IRequest from "../../interfaces/vendors/IRequest";
 import IResponse from "../../interfaces/vendors/IResponse";
+import Bought from "../../models/Bought";
 import Product from "../../models/Product";
 import Rate from "../../models/Rate";
 import User from "../../models/User";
@@ -22,12 +23,12 @@ class RateController extends IController {
      */
 
     public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const doc = await Rate.find();
+        const docs = await Rate.find();
         return res.status(HttpStatusCode.OK)
             .send({
                 error: false,
                 message: `All rate records`,
-                data: doc,
+                data: docs,
             })
             .end();
     }
@@ -42,7 +43,7 @@ class RateController extends IController {
 
     public async show(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
         const { productID } = req.params;
-        const doc = await Rate.find({ productID: productID });
+        const docs = await Rate.find({ productID: productID });
         const rate = await Rate.aggregate([
             {
                 $match: { productID: productID, }
@@ -60,7 +61,7 @@ class RateController extends IController {
                 message: `Rate of product with ID: ${productID}`,
                 data: {
                     rate: rate.length === 0 ? false : rate[0].average,
-                    detail: doc
+                    detail: docs
                 },
             })
             .end();
@@ -86,7 +87,7 @@ class RateController extends IController {
                 .end();
         try {
             // Valid ID Token form header
-            const user = await Firebase.auth().verifyIdToken(token.toString(), true);
+            const auth = await Firebase.auth().verifyIdToken(token.toString(), true);
             const { productID } = req.params;
             // Valid body property message & rate
             const { message, rate } = req.body;
@@ -123,17 +124,25 @@ class RateController extends IController {
                     })
                     .end();
             // Check information user 
-            const docUser = await User.findOne({ uid: user.uid })
-            if (!docUser)
+            const user = await User.findOne({ uid: auth.uid });
+            if (user === null)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
                         error: true,
                         message: "User has not updated information"
                     })
                     .end();
+            const bought = await Bought.find({ productID: productID, userID: user._id });
+            if (bought.length === 0)
+                return res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        message: "The product has not been purchased before"
+                    })
+                    .end();
             // Create new document
             const doc = new Rate({
-                userID: docUser._id,
+                userID: user._id,
                 productID: productID,
                 rate: rate,
                 message: message,
@@ -159,9 +168,15 @@ class RateController extends IController {
         }
     }
 
-
+    /**
+     * 
+     * Update rate 
+     * 
+     * @param req 
+     * @param res 
+     */
     public async update(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        
+
     }
 }
 
