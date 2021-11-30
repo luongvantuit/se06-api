@@ -1,11 +1,11 @@
-import { credential, initializeApp, app } from "firebase-admin";
+import admin from "firebase-admin";
 import * as path from "path";
 
-const cred = credential.cert(
+const cred = admin.credential.cert(
     path.join(__dirname, "../../serviceAccountKey.json")
 );
 
-const Firebase: app.App = initializeApp({
+const Firebase: admin.app.App = admin.initializeApp({
     credential: cred,
 });
 

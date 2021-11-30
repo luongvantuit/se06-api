@@ -1,10 +1,15 @@
 import { ParamsDictionary } from "express-serve-static-core";
+import { ObjectId } from "mongodb";
 import { ParsedQs } from "qs";
+import HttpStatusCode from "../../interfaces/vendors/HttpStatusCode";
 import IBaseResponse from "../../interfaces/vendors/IBaseResponse";
 import IController from "../../interfaces/vendors/IController";
 import IRequest from "../../interfaces/vendors/IRequest";
 import IResponse from "../../interfaces/vendors/IResponse";
+import Product from "../../models/Product";
 import Rate from "../../models/Rate";
+import User from "../../models/User";
+import Firebase from "../../services/auths/Firebase";
 
 class RateController extends IController {
 
@@ -17,13 +22,14 @@ class RateController extends IController {
      */
 
     public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const { id } = req.params;
         const doc = await Rate.find();
-        res.send({
-            error: false,
-            messages: `All rate records`,
-            data: doc,
-        });
+        return res.status(HttpStatusCode.OK)
+            .send({
+                error: false,
+                message: `All rate records`,
+                data: doc,
+            })
+            .end();
     }
 
     /**
@@ -35,11 +41,11 @@ class RateController extends IController {
      */
 
     public async show(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const { id } = req.params;
-        const doc = await Rate.find({ productID: id });
+        const { productID } = req.params;
+        const doc = await Rate.find({ productID: productID });
         const rate = await Rate.aggregate([
             {
-                $match: { productID: id, }
+                $match: { productID: productID, }
             },
             {
                 $group: {
@@ -48,14 +54,16 @@ class RateController extends IController {
                 }
             }
         ])
-        res.send({
-            error: false,
-            messages: `Rate of product with id: ${id}`,
-            data: {
-                rate: rate.length ?? rate[0].average,
-                detail: doc
-            },
-        });
+        return res.status(HttpStatusCode.OK)
+            .send({
+                error: false,
+                message: `Rate of product with ID: ${productID}`,
+                data: {
+                    rate: rate.length === 0 ? false : rate[0].average,
+                    detail: doc
+                },
+            })
+            .end();
     }
 
     /**
@@ -66,8 +74,96 @@ class RateController extends IController {
      * @param res 
      */
 
-    public async store(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
-        res.end();
+    public async store(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
+        const token = req.headers['token'];
+        if (token === undefined)
+            return res.status(HttpStatusCode.UNAUTHORIZED)
+                .send({
+                    error: true,
+                    message: "Unauthorized! Header token is empty",
+                })
+                .end();
+
+
+        try {
+            const u = await Firebase.auth().verifyIdToken(token.toString(), true);
+
+
+            const { productID } = req.params;
+            // Valid body 
+            const { message, rate } = req.body;
+            if (message === undefined || rate === undefined)
+                return res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        message: "Property message & rate not is empty",
+                    })
+                    .end();
+
+            if (rate > 5)
+                return res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        message: "Property rate not greater than 5"
+                    })
+                    .end();
+
+            // Valid product ID
+            if (!ObjectId.isValid(productID))
+                return res.status(HttpStatusCode.NOT_FOUND)
+                    .send({
+                        error: true,
+                        message: `Not found product with ID: ${productID}`
+                    })
+                    .end();
+
+            // Find product by ID if product is existed status code = 404
+            const product = await Product.findById(productID);
+            if (product === null)
+                return res.status(HttpStatusCode.NOT_FOUND)
+                    .send({
+                        error: true,
+                        message: `Not found product with id: ${productID}`
+                    })
+                    .end();
+
+            const fUser = await User.findOne({ uid: u.uid })
+            if (!fUser)
+                return res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        message: "User has not updated information"
+                    })
+                    .end();
+            const doc = new Rate({
+                userID: fUser._id,
+                productID: productID,
+                rate: rate,
+                message: message,
+                date: Date.now(),
+            })
+
+            const result = await doc.save();
+            return res.status(HttpStatusCode.OK)
+                .send({
+                    error: false,
+                    data: result,
+                    message: `New rate by use for product with id: ${productID}`
+                })
+                .end();
+        }
+        catch (error: any) {
+            return res.status(HttpStatusCode.UNAUTHORIZED)
+                .send({
+                    error: true,
+                    message: error.message,
+                })
+                .end();
+        }
+
+
+
+
     }
 }
 

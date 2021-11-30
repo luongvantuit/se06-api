@@ -1,6 +1,6 @@
 interface IBaseResponse<T> {
     error: boolean;
-    messages: string;
+    message: string;
     data?: T;
 }
 
