@@ -15,6 +15,7 @@ const ProductSchema: Schema = new Schema({
     date: { type: Date },
     origin: { type: String },
     category: { type: Number },
+    photos: { type: [String] },
 })
 
 const Product: Model<IProductModel> = model<IProductModel>('Product', ProductSchema);

@@ -8,6 +8,7 @@ interface IProduct {
     date: Date;
     origin: String;
     category: Number;
+    photos: [String];
 }
 
 export default IProduct;
