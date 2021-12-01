@@ -1,7 +1,10 @@
 import { ParamsDictionary } from "express-serve-static-core";
 import { ObjectId } from "mongodb";
 import { ParsedQs } from "qs";
-import HttpStatusCode from "../../interfaces/vendors/HttpStatusCode";
+import CodeError from "../../exception/CodeError";
+import ErrorResponse from "../../exception/ErrorResponse";
+import HttpStatusCode from "../../exception/HttpStatusCode";
+import Token from "../../exception/Token";
 import IBaseResponse from "../../interfaces/vendors/IBaseResponse";
 import IController from "../../interfaces/vendors/IController";
 import IRequest from "../../interfaces/vendors/IRequest";
@@ -10,7 +13,6 @@ import Bought from "../../models/Bought";
 import Product from "../../models/Product";
 import Rate from "../../models/Rate";
 import User from "../../models/User";
-import Firebase from "../../services/auths/Firebase";
 
 class RateController extends IController {
 
@@ -76,50 +78,36 @@ class RateController extends IController {
      */
 
     public async store(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const { token } = await req.headers;
-        // Check null token in header if null return state unauthorized
-        if (token === undefined)
-            return res.status(HttpStatusCode.UNAUTHORIZED)
+        const { productID } = await req.params;
+        // Valid body property message & rate
+        const { message, rate } = await req.body;
+        if (message === undefined || rate === undefined)
+            return res.status(HttpStatusCode.BAD_REQUEST)
                 .send({
-                    error: true,
-                    message: "Unauthorized! Header token is empty",
+                    ...ErrorResponse.get(CodeError.BODY_PROPERTY_EMPTY)
                 })
                 .end();
-        try {
-            // Valid ID Token form header
-            const auth = await Firebase.auth().verifyIdToken(token.toString(), true);
-            const { productID } = await req.params;
-            // Valid body property message & rate
-            const { message, rate } = await req.body;
-            if (message === undefined || rate === undefined)
-                return res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        message: "Property message & rate not is empty",
-                    })
-                    .end();
-            // Check rate in body if rate greater than 5 return error
-            if (rate > 5)
-                return res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        message: "Property rate not greater than 5"
-                    })
-                    .end();
-            // Valid product ID
-            if (!ObjectId.isValid(productID))
-                return res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
-                        error: true,
-                        message: `Not found product with ID: ${productID}`
-                    })
-                    .end();
-            // Find product by ID if product is existed status code = 404
+        // Check rate in body if rate greater than 5 return error
+        if (rate > 5)
+            return res.status(HttpStatusCode.BAD_REQUEST)
+                .send({
+                    ...ErrorResponse.get(CodeError.PROPERTY_RATE_GREATER_THAN_5)
+                })
+                .end();
+        // Valid product ID
+        if (!ObjectId.isValid(productID))
+            return res.status(HttpStatusCode.BAD_REQUEST)
+                .send({
+                    ...ErrorResponse.get(CodeError.PARAM_WRONG_FORMAT),
+                })
+                .end();
+    
+        return await Token.verify(req, res, async (req, res, auth): Promise<void> => {
             const product = await Product.findById(productID);
             if (product === null)
                 return res.status(HttpStatusCode.NOT_FOUND)
                     .send({
-                        error: true,
+                        ...ErrorResponse.get(CodeError.PRODUCT_NOT_FOUND),
                         message: `Not found product with id: ${productID}`
                     })
                     .end();
@@ -128,16 +116,14 @@ class RateController extends IController {
             if (user === null)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
-                        error: true,
-                        message: "User has not updated information"
+                        ...ErrorResponse.get(CodeError.USER_INFORMATION_EMPTY)
                     })
                     .end();
             const bought = await Bought.find({ productID: productID, userID: user._id });
             if (bought.length === 0)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
-                        error: true,
-                        message: "The product has not been purchased before"
+                        ...ErrorResponse.get(CodeError.PRODUCT_NOT_PURCHASED),
                     })
                     .end();
             // Create new document
@@ -156,16 +142,7 @@ class RateController extends IController {
                     message: `New rate by use for product with id: ${productID}`
                 })
                 .end();
-        }
-        catch (error: any) {
-            // Send error & status code unauthorized if ID token verify error
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    error: true,
-                    message: error.message,
-                })
-                .end();
-        }
+        })
     }
 
     /**

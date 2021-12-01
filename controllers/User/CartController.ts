@@ -1,31 +1,24 @@
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import HttpStatusCode from "../../interfaces/vendors/HttpStatusCode";
+import CodeError from "../../exception/CodeError";
+import ErrorResponse from "../../exception/ErrorResponse";
+import HttpStatusCode from "../../exception/HttpStatusCode";
+import Token from "../../exception/Token";
 import IBaseResponse from "../../interfaces/vendors/IBaseResponse";
 import IController from "../../interfaces/vendors/IController";
 import IRequest from "../../interfaces/vendors/IRequest";
 import IResponse from "../../interfaces/vendors/IResponse";
 import Cart from "../../models/Cart";
 import User from "../../models/User";
-import Firebase from "../../services/auths/Firebase";
 
 class CartController extends IController {
     public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const { token } = await req.headers;
-        if (!token)
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    error: true,
-                    message: 'Unauthorized! Header token is empty',
-                }).end();
-        try {
-            const auth = await Firebase.auth().verifyIdToken(token.toString());
+        return await Token.verify(req, res, async (req, res, auth): Promise<void> => {
             const user = await User.findOne({ uid: auth.uid })
             if (user === null)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
-                        error: true,
-                        message: 'User has not updated information',
+                        ...ErrorResponse.get(CodeError.USER_INFORMATION_EMPTY),
                     }).end();
             const cart = Cart.find({ userID: user._id })
             return res.status(HttpStatusCode.OK)
@@ -34,38 +27,22 @@ class CartController extends IController {
                     message: 'Cart for user',
                     data: cart,
                 }).end();
-        } catch (error: any) {
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    error: true,
-                    message: error.message,
-                }).end();
-        }
+        })
     }
 
     public async store(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
-        const { token } = await req.headers;
         const { productID } = await req.body;
-        if (!token)
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    error: true,
-                    message: 'Unauthorized! Header token is empty',
-                }).end();
         if (!productID)
             return res.status(HttpStatusCode.BAD_REQUEST)
                 .send({
-                    error: true,
-                    message: 'Property productID is empty',
+                    ...ErrorResponse.get(CodeError.BODY_PROPERTY_EMPTY),
                 }).end();
-        try {
-            const auth = await Firebase.auth().verifyIdToken(token.toString());
+        return await Token.verify(req, res, async (req, res, auth): Promise<void> => {
             const user = await User.findOne({ uid: auth.uid })
             if (user === null)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
-                        error: true,
-                        message: 'User has not updated information',
+                        ...ErrorResponse.get(CodeError.USER_INFORMATION_EMPTY)
                     }).end();
             const doc = new Cart({
                 productID: productID,
@@ -79,13 +56,7 @@ class CartController extends IController {
                     data: result,
                 })
                 .end();
-        } catch (error: any) {
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    error: true,
-                    message: error.message,
-                }).end();
-        }
+        })
     }
 }
 
