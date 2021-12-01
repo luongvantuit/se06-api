@@ -59,6 +59,13 @@ const ErrorResponse: Map<CodeError, IResCode> = new Map<CodeError, IResCode>([
             error: true,
             message: "Oh no! The product has not been purchased before",
         }
+    ],
+    [
+        CodeError.BODY_PROPERTY_WRONG_FORMAT, {
+            code: "body/property/wrong/format",
+            error: true,
+            message: "Oh no! Body property wrong format",
+        }
     ]
 ])
 

@@ -7,6 +7,7 @@ enum CodeError {
     PARAM_WRONG_FORMAT,
     PRODUCT_NOT_FOUND,
     PRODUCT_NOT_PURCHASED,
+    BODY_PROPERTY_WRONG_FORMAT,
 }
 
 export default CodeError;

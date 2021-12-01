@@ -1,4 +1,5 @@
 import { Router, json } from "express";
+import AuthController from "../controllers/Auth/AuthController";
 import RateController from "../controllers/Product/RateController";
 import CartController from "../controllers/User/CartController";
 
@@ -13,7 +14,10 @@ API.post('/rates/:productID', json(), RateController.store);
 
 // cart
 API.get('/cart', CartController.index);
-API.post('/cart', CartController.store);
+API.post('/cart', json(), CartController.store);
+
+// auth
+API.get('/auth', json(), AuthController.index);
 
 
 export default API;
