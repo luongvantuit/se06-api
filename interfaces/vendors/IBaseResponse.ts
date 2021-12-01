@@ -1,6 +1,6 @@
-interface IBaseResponse<T> {
-    error: boolean;
-    message: string;
+import IResCode from "./IResCode";
+
+interface IBaseResponse<T> extends IResCode {
     data?: T;
 }
 
