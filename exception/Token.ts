@@ -3,7 +3,6 @@ import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
 import Firebase from "../services/auths/Firebase";
 import CodeError from "./CodeError";
-import ErrorResponse from "./ErrorResponse";
 import HttpStatusCode from "./HttpStatusCode";
 
 class Token {
@@ -12,7 +11,8 @@ class Token {
         if (token === undefined)
             return res.status(HttpStatusCode.UNAUTHORIZED)
                 .send({
-                    ...ErrorResponse.get(CodeError.TOKEN_HEADER_EMPTY)
+                    code: CodeError.TOKEN_HEADER_EMPTY,
+                    error: true,
                 })
                 .end();
         try {
@@ -22,7 +22,8 @@ class Token {
         catch (error: any) {
             return res.status(HttpStatusCode.UNAUTHORIZED)
                 .send({
-                    ...ErrorResponse.get(CodeError.TOKEN_VERIFY_FAILED)
+                    code: CodeError.TOKEN_VERIFY_FAILED,
+                    error: true,
                 })
                 .end();
         }

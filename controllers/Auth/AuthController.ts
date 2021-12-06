@@ -2,7 +2,6 @@ import { validate } from "email-validator";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import CodeError from "../../exception/CodeError";
-import ErrorResponse from "../../exception/ErrorResponse";
 import HttpStatusCode from "../../exception/HttpStatusCode";
 import IBaseResponse from "../../interfaces/vendors/IBaseResponse";
 import IController from "../../interfaces/vendors/IController";
@@ -11,13 +10,15 @@ import IResponse from "../../interfaces/vendors/IResponse";
 import Firebase from "../../services/auths/Firebase";
 
 class AuthController extends IController {
+
     public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
         const { email } = await req.body;
         if (!email)
             return res.status(HttpStatusCode.BAD_REQUEST)
                 .send(
                     {
-                        ...ErrorResponse.get(CodeError.BODY_PROPERTY_EMPTY),
+                        code: CodeError.BODY_PROPERTY_EMPTY,
+                        error: true,
                     }
                 )
                 .end();
@@ -26,7 +27,8 @@ class AuthController extends IController {
             return res.status(HttpStatusCode.BAD_REQUEST)
                 .send(
                     {
-                        ...ErrorResponse.get(CodeError.BODY_PROPERTY_WRONG_FORMAT),
+                        code: CodeError.BODY_PROPERTY_WRONG_FORMAT,
+                        error: true,
                     }
                 )
                 .end();
@@ -36,8 +38,7 @@ class AuthController extends IController {
                 .send(
                     {
                         error: true,
-                        message: "Email is existed in record! Notice",
-                        code: 'record/email/existed',
+                        code: CodeError.RECORD_EMAIL_EXISTED,
                     }
                 )
                 .end();
@@ -46,7 +47,6 @@ class AuthController extends IController {
                 .send(
                     {
                         error: false,
-                        message: "Email is not existed in record! OK"
                     }
                 )
                 .end();

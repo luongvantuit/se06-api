@@ -1,7 +1,6 @@
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import CodeError from "../../exception/CodeError";
-import ErrorResponse from "../../exception/ErrorResponse";
 import HttpStatusCode from "../../exception/HttpStatusCode";
 import Token from "../../exception/Token";
 import IBaseResponse from "../../interfaces/vendors/IBaseResponse";
@@ -18,7 +17,8 @@ class CartController extends IController {
             if (user === null)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
-                        ...ErrorResponse.get(CodeError.USER_INFORMATION_EMPTY),
+                        code: CodeError.USER_INFORMATION_EMPTY,
+                        error: true,
                     }).end();
             const cart = Cart.find({ userID: user._id })
             return res.status(HttpStatusCode.OK)
@@ -35,14 +35,16 @@ class CartController extends IController {
         if (!productID)
             return res.status(HttpStatusCode.BAD_REQUEST)
                 .send({
-                    ...ErrorResponse.get(CodeError.BODY_PROPERTY_EMPTY),
+                    code: CodeError.BODY_PROPERTY_EMPTY,
+                    error: true,
                 }).end();
         return await Token.verify(req, res, async (req, res, auth): Promise<void> => {
             const user = await User.findOne({ uid: auth.uid })
             if (user === null)
                 return res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
-                        ...ErrorResponse.get(CodeError.USER_INFORMATION_EMPTY)
+                        code: CodeError.USER_INFORMATION_EMPTY,
+                        error: true
                     }).end();
             const doc = new Cart({
                 productID: productID,
@@ -52,7 +54,6 @@ class CartController extends IController {
             return res.status(HttpStatusCode.OK)
                 .send({
                     error: false,
-                    message: `Add product with id: ${productID} to cart`,
                     data: result,
                 })
                 .end();
