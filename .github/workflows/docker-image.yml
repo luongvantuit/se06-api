@@ -24,6 +24,7 @@ jobs:
         key: ${{secrets.SSH_PRIVATE_KEY}}
         script: |
           cd ${{secrets.SSH_PATH}}
+          git remote set-url origin https://${{secrets.GH_USERNAME}}:${{secrets.GH_PASSWORD}}@github.com/${{secrets.GH_USERNAME}}/${{secrets.GH_REPO}}.git
           git pull origin master
           sudo docker-compose build 
           sudo docker-compose up -d
