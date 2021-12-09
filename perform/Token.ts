@@ -6,26 +6,33 @@ import CodeError from "./CodeError";
 import HttpStatusCode from "./HttpStatusCode";
 
 class Token {
-    public async verify(req: IRequest, res: IResponse, ok: (res: IRequest, req: IResponse, auth: DecodedIdToken) => void): Promise<void> {
+    public async verify(req: IRequest, res: IResponse, successed: (req: IRequest, res: IResponse, auth: DecodedIdToken) => void, failed: (req: IRequest, res: IResponse) => void): Promise<void> {
         const { token } = await req.headers;
-        if (token === undefined)
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    code: CodeError.TOKEN_HEADER_EMPTY,
-                    error: true,
-                })
-                .end();
+        if (token === undefined) {
+            if (failed === undefined)
+                return res.status(HttpStatusCode.UNAUTHORIZED)
+                    .send({
+                        code: CodeError.TOKEN_HEADER_EMPTY,
+                        error: true,
+                    })
+                    .end();
+            else
+                return failed(req, res);
+        }
         try {
             const auth: DecodedIdToken = await Firebase.auth().verifyIdToken(token.toString(), true);
-            return ok(req, res, auth);
+            return successed(req, res, auth);
         }
         catch (error: any) {
-            return res.status(HttpStatusCode.UNAUTHORIZED)
-                .send({
-                    code: CodeError.TOKEN_VERIFY_FAILED,
-                    error: true,
-                })
-                .end();
+            if (failed === undefined)
+                return res.status(HttpStatusCode.UNAUTHORIZED)
+                    .send({
+                        code: CodeError.TOKEN_VERIFY_FAILED,
+                        error: true,
+                    })
+                    .end();
+            else
+                return failed(req, res);
         }
     }
 }
