@@ -8,9 +8,7 @@
         "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./index.ts",
         "build": "rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json",
         "prestart": "rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json",
-        "start": "node ./build/index.js",
-        "predocker": "cat .env.docker >> .env && rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json",
-        "docker": "node ./build/index.js"
+        "start": "node ./build/index.js"
     },
     "keywords": [],
     "author": "",
