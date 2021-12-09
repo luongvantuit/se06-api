@@ -1,5 +1,5 @@
 import { Router } from "express";
-import HttpStatusCode from "../exception/HttpStatusCode";
+import HttpStatusCode from "../perform/HttpStatusCode";
 
 const Web: Router = Router();
 
