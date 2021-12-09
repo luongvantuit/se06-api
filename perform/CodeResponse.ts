@@ -1,4 +1,4 @@
-enum CodeError {
+enum CodeResponse {
     TOKEN_HEADER_EMPTY = "token/header/empty",
     TOKEN_VERIFY_FAILED = "token/verify/failed",
     USER_INFORMATION_EMPTY = "user/information/empty",
@@ -11,4 +11,4 @@ enum CodeError {
     RECORD_EMAIL_EXISTED = "record/email/existed"
 }
 
-export default CodeError;
+export default CodeResponse;
