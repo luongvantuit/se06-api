@@ -2,7 +2,7 @@ import { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
 import Firebase from "../services/auths/Firebase";
-import CodeError from "./CodeError";
+import CodeResponse from "./CodeResponse";
 import HttpStatusCode from "./HttpStatusCode";
 
 class Token {
@@ -12,7 +12,7 @@ class Token {
             if (failed === undefined)
                 return res.status(HttpStatusCode.UNAUTHORIZED)
                     .send({
-                        code: CodeError.TOKEN_HEADER_EMPTY,
+                        code: CodeResponse.TOKEN_HEADER_EMPTY,
                         error: true,
                     })
                     .end();
@@ -27,7 +27,7 @@ class Token {
             if (failed === undefined)
                 return res.status(HttpStatusCode.UNAUTHORIZED)
                     .send({
-                        code: CodeError.TOKEN_VERIFY_FAILED,
+                        code: CodeResponse.TOKEN_VERIFY_FAILED,
                         error: true,
                     })
                     .end();

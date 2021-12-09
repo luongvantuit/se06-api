@@ -5,7 +5,7 @@ import IBaseResponse from "../interfaces/vendors/IBaseResponse";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
-import CodeError from "../perform/CodeError";
+import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Firebase from "../services/auths/Firebase";
 
@@ -15,7 +15,7 @@ class CheckEmailRecordController extends IController {
         if (!validate(email))
             return res.status(HttpStatusCode.BAD_REQUEST)
                 .send({
-                    code: CodeError.BODY_PROPERTY_WRONG_FORMAT,
+                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                     error: true,
                 })
                 .end();
@@ -23,7 +23,7 @@ class CheckEmailRecordController extends IController {
             const user = await Firebase.auth().getUserByEmail(email);
             return res.status(HttpStatusCode.OK)
                 .send({
-                    code: CodeError.RECORD_EMAIL_EXISTED,
+                    code: CodeResponse.RECORD_EMAIL_EXISTED,
                     error: false,
                     data: user,
                 })
