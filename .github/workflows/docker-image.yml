@@ -1,31 +1,27 @@
-name: Docker Image CI
+name: Docker CI
 
 on:
   push:
-    branches: [ master ]
+    branches: ["master"]
   pull_request:
-    branches: [ master ]
+    branches: ["master"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-
-    - name: SSH Deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{secrets.SSH_HOST}}
-        username: ${{secrets.SSH_USERNAME}}
-        key: ${{secrets.SSH_PRIVATE_KEY}}
-        script: |
-          cd ${{secrets.SSH_PATH}}
-          git remote set-url origin https://${{secrets.GH_USERNAME}}:${{secrets.GH_PASSWORD}}@github.com/${{secrets.GH_USERNAME}}/${{secrets.GH_REPO}}.git
-          git pull origin master
-          sudo docker-compose build 
-          sudo docker-compose up -d
-          
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          script: |
+            cd ${{secrets.SSH_PATH}}
+            git remote set-url origin https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
+            git pull origin master
+            sudo docker-compose build 
+            sudo docker-compose up -d
