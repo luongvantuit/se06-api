@@ -6,10 +6,10 @@ import CodeResponse from "./CodeResponse";
 import HttpStatusCode from "./HttpStatusCode";
 
 class Token {
-    public async verify(req: IRequest, res: IResponse, successed: (req: IRequest, res: IResponse, auth: DecodedIdToken) => void, failed?: (req: IRequest, res: IResponse) => void, tokenEmpty?: (req: IRequest, res: IResponse) => void): Promise<void> {
+    public async verify(req: IRequest, res: IResponse, successed: (req: IRequest, res: IResponse, auth: DecodedIdToken) => void, failed?: (req: IRequest, res: IResponse) => void): Promise<void> {
         const { token } = await req.headers;
         if (token === undefined) {
-            if (tokenEmpty === undefined)
+            if (failed === undefined)
                 return res.status(HttpStatusCode.UNAUTHORIZED)
                     .send({
                         code: CodeResponse.TOKEN_HEADER_EMPTY,
@@ -17,7 +17,7 @@ class Token {
                     })
                     .end();
             else
-                return tokenEmpty(req, res);
+                return failed(req, res);
         }
         try {
             const auth: DecodedIdToken = await Firebase.auth().verifyIdToken(token.toString(), true);
