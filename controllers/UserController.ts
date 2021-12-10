@@ -12,9 +12,9 @@ import Token from "../perform/Token";
 class UserController extends IController {
     public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
         return await Token.verify(req, res, async (req, res, auth) => {
-            const user = User.findOne({ uid: auth.uid })
+            const user = await User.findOne({ uid: auth.uid })
             if (user === null)
-                return res.status(HttpStatusCode.BAD_REQUEST)
+                return await res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
                         error: true,
                         code: CodeResponse.USER_INFORMATION_EMPTY,
@@ -31,7 +31,7 @@ class UserController extends IController {
         const { uid } = req.params;
 
         if (uid === undefined)
-            return res.status(HttpStatusCode.BAD_REQUEST)
+            return await res.status(HttpStatusCode.BAD_REQUEST)
                 .send({
                     error: true,
                     code: CodeResponse.PARAM_EMPTY,
@@ -51,13 +51,13 @@ class UserController extends IController {
                 birthday: user.birthday,
                 email: user.email,
             }
-            return res.status(HttpStatusCode.OK)
+            return await res.status(HttpStatusCode.OK)
                 .send({
                     error: false,
                     data: resUser,
                 }).end();
         }
-        return res.status(HttpStatusCode.BAD_REQUEST)
+        return await res.status(HttpStatusCode.BAD_REQUEST)
             .send({
                 error: true,
                 code: CodeResponse.USER_INFORMATION_EMPTY,
@@ -65,16 +65,87 @@ class UserController extends IController {
     }
 
 
-    public async create(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
-        return await Token.verify(req, res, (req, res, auth) => {
-
-        })
+    public async create(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
+        return await Token.verify(req, res, async (req, res, auth) => {
+            const oldUser = await User.findOne({ uid: auth.uid });
+            if (oldUser !== null)
+                return await res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.METHOD_REQUEST_WRONG,
+                    })
+                    .end();
+            const {
+                address,
+                displayName,
+                displayPhoto,
+                birthday,
+                bio,
+            } = req.body;
+            try {
+                const newUser = new User({
+                    uid: auth.uid,
+                    address: address,
+                    displayName: displayName,
+                    displayPhoto: displayPhoto ?? `https://gravatar.com/avatar/${auth.uid}?s=400&d=identicon`,
+                    birthday: birthday,
+                    bio: bio,
+                    email: auth.email,
+                })
+                const resBody = await newUser.save();
+                return await res.status(HttpStatusCode.OK)
+                    .send({
+                        error: false,
+                        data: resBody,
+                    }).end();
+            } catch (error: any) {
+                return await res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                    }).end();
+            }
+        });
     }
 
 
-    public async update(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
-        return await Token.verify(req, res, (req, res, auth) => {
-
+    public async update(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
+        return await Token.verify(req, res, async (req, res, auth) => {
+            const oldUser = await User.findOne({ uid: auth.uid });
+            if (oldUser === null)
+                return await res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.USER_INFORMATION_EMPTY,
+                    })
+                    .end();
+            const {
+                address,
+                displayName,
+                displayPhoto,
+                birthday,
+                bio,
+            } = req.body;
+            try {
+                oldUser.address = address;
+                oldUser.displayPhoto = displayPhoto ?? `https://gravatar.com/avatar/${auth.uid}?s=400&d=identicon`;
+                oldUser.displayName = displayName;
+                oldUser.birthday = birthday;
+                oldUser.bio = bio;
+                oldUser.email = auth.email;
+                const newUser = await oldUser.save();
+                return await res.status(HttpStatusCode.OK)
+                    .send({
+                        error: false,
+                        data: newUser,
+                    }).end();
+            } catch (error: any) {
+                return await res.status(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                    }).end();
+            }
         })
     }
 

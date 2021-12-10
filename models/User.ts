@@ -11,7 +11,7 @@ interface IUser {
     birthday?: Date,
     displayName?: string,
     displayPhoto?: string,
-    email: string,
+    email?: string,
     bio?: string,
     cards?: Card[],
     address?: string

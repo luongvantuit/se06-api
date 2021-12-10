@@ -9,7 +9,8 @@ enum CodeResponse {
     PRODUCT_NOT_FOUND = "product/not/found",
     PRODUCT_NOT_PURCHASED = "product/not/purchased",
     BODY_PROPERTY_WRONG_FORMAT = "body/property/wrong/format",
-    RECORD_EMAIL_EXISTED = "record/email/existed"
+    RECORD_EMAIL_EXISTED = "record/email/existed",
+    METHOD_REQUEST_WRONG = "method/request/wrong",
 }
 
 export default CodeResponse;
