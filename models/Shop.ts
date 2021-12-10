@@ -5,8 +5,8 @@ interface IShop {
     displayName?: string,
     displayPhoto?: string,
     displayPhotoCover?: string,
-    created?: Date,
-    discription?: string,
+    created: Date,
+    description?: string,
 }
 
 interface ShopModel extends IShop, Document {
@@ -18,8 +18,8 @@ const ShopSchema = new Schema({
     displayName: { type: String },
     displayPhoto: { type: String },
     displayPhotoCover: { type: String },
-    created: { type: Date },
-    discription: { type: String },
+    created: { type: Date, required: true },
+    description: { type: String },
 })
 
 
