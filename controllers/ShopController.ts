@@ -131,7 +131,7 @@ class ShopController extends IController {
                 .end();
         return await Token.verify(req, res, async (req, res, auth) => {
             const shop = await Shop.findById(sid);
-            if (shop === null || shop.uid === auth.uid)
+            if (shop === null || shop.uid !== auth.uid)
                 return await res.status(HttpStatusCode.BAD_REQUEST)
                     .send({
                         error: true,
