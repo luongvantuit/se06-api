@@ -47,6 +47,7 @@ class UserController extends IController {
                 displayName: user.displayName,
                 address: user.address,
                 displayPhoto: user.displayPhoto ?? `https://gravatar.com/avatar/${uid}?s=400&d=identicon`,
+                displayPhotoCover: user.displayPhotoCover,
                 bio: user.bio,
                 birthday: user.birthday,
                 email: user.email,
@@ -79,6 +80,7 @@ class UserController extends IController {
                 address,
                 displayName,
                 displayPhoto,
+                displayPhotoCover,
                 birthday,
                 bio,
             } = req.body;
@@ -88,6 +90,7 @@ class UserController extends IController {
                     address: address,
                     displayName: displayName,
                     displayPhoto: displayPhoto ?? `https://gravatar.com/avatar/${auth.uid}?s=400&d=identicon`,
+                    displayPhotoCover: displayPhotoCover,
                     birthday: birthday,
                     bio: bio,
                     email: auth.email,
@@ -123,15 +126,17 @@ class UserController extends IController {
                 address,
                 displayName,
                 displayPhoto,
+                displayPhotoCover,
                 birthday,
                 bio,
             } = req.body;
             try {
-                oldUser.address = address;
+                oldUser.address = address ?? oldUser.address;
                 oldUser.displayPhoto = displayPhoto ?? `https://gravatar.com/avatar/${auth.uid}?s=400&d=identicon`;
-                oldUser.displayName = displayName;
-                oldUser.birthday = birthday;
-                oldUser.bio = bio;
+                oldUser.displayName = displayName ?? oldUser.displayName;
+                oldUser.birthday = birthday ?? oldUser.birthday;
+                oldUser.displayPhotoCover = displayPhotoCover ?? oldUser.displayPhotoCover;
+                oldUser.bio = bio ?? oldUser.bio;
                 oldUser.email = auth.email;
                 const newUser = await oldUser.save();
                 return await res.status(HttpStatusCode.OK)
