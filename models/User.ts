@@ -1,11 +1,5 @@
 import { model, Model, Schema } from "mongoose"
 
-interface Card {
-    cardNumber: string,
-    cvv: string,
-    ownerName: string,
-}
-
 interface IUser {
     uid: string,
     birthday?: Date,
@@ -14,7 +8,6 @@ interface IUser {
     displayPhotoCover?: string,
     email?: string,
     bio?: string,
-    cards?: Card[],
     address?: string
 }
 
@@ -31,14 +24,12 @@ const UserSchema = new Schema({
     displayConver: { type: String },
     bio: { type: String },
     email: { type: String, required: true },
-    cards: [{ cardName: String, cvv: String, ownerName: String, default: [] }],
     address: { type: String },
 })
 
 const User: Model<UserModel> = model<UserModel>('user', UserSchema);
 
 export {
-    Card,
     IUser,
     UserModel,
     UserSchema,
