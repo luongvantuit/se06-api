@@ -13,6 +13,7 @@ enum CodeResponse {
     METHOD_REQUEST_WRONG = "method/request/wrong",
     SHOP_NOT_FOUND = "shop/not/found",
     CARD_NOT_FOUND = "card/not/found",
+    UPLOAD_ERROR = "upload/error",
 }
 
 export default CodeResponse;
