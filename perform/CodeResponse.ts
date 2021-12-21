@@ -12,6 +12,7 @@ enum CodeResponse {
     RECORD_EMAIL_EXISTED = "record/email/existed",
     METHOD_REQUEST_WRONG = "method/request/wrong",
     SHOP_NOT_FOUND = "shop/not/found",
+    CARD_NOT_FOUND = "card/not/found",
 }
 
 export default CodeResponse;
