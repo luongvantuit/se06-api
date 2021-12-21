@@ -3,6 +3,8 @@ import CardController from "../controllers/CardController";
 import CheckEmailRecordController from "../controllers/CheckEmailRecordController";
 import ProductController from "../controllers/ProductController";
 import ShopController from "../controllers/ShopController";
+import UploadFileController from "../controllers/UploadFileController";
+import UploadMultiFilesController from "../controllers/UploadMultiFilesController";
 import UserController from "../controllers/UserController";
 const API: Router = Router();
 
@@ -36,5 +38,8 @@ API.put('/product/:sid/:pid', json(), ProductController.update);
 API.delete('/product/:sid/:pid', json(), ProductController.destroy);
 
 
+// API upload file
+API.post('/upload', UploadFileController.create);
+API.post('/upload', UploadMultiFilesController.create);
 
 export default API;

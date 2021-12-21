@@ -9,3 +9,5 @@ class UploadFileController extends IController {
 
     }
 }
+
+export default new UploadFileController;
