@@ -11,6 +11,10 @@ class Statics {
             "/public",
             express.static(path.join(__dirname, "../resources/public"))
         );
+        _express = _express.use(
+            "/upload",
+            express.static(path.join(__dirname, "../upload"))
+        );
         return _express;
     }
 }
