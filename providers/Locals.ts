@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 import { Application } from "express";
 import Log from "../middlewares/Log";
+import { join } from 'path';
 
 class Locals {
     public config() {
-        dotenv.config();
+        dotenv.config({ path: join(__dirname, '../.env') });
 
         var port: number;
         try {
