@@ -27,7 +27,7 @@ API.delete('/shop/:sid', json(), ShopController.destroy);
 API.get('/cards', CardController.index);
 API.get('/card/:cid', CardController.show);
 API.post('/card', json(), CardController.create);
-API.put('/card/:cid', json(), CardController.update);
+API.put('/card', json(), CardController.update);
 API.delete('/card/:cid', json(), CardController.destroy);
 
 // API product
@@ -40,6 +40,6 @@ API.delete('/product/:sid/:pid', json(), ProductController.destroy);
 
 // API upload file
 API.post('/upload', UploadFileController.create);
-API.post('/upload', UploadMultiFilesController.create);
+API.post('/uploads', UploadMultiFilesController.create);
 
 export default API;

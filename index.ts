@@ -3,7 +3,7 @@ import * as cluster from "cluster";
 import * as os from "os";
 import ProcessEvent from "./app/core/ProcessEvent";
 
-if (cluster.default.isMaster) {
+if (cluster.default.isPrimary) {
     App.loadConfiguration();
 
     const CPUS: os.CpuInfo[] = os.cpus();

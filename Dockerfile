@@ -18,4 +18,6 @@ RUN cp -R ./resources ./build/resources
 
 RUN cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json
 
+RUN cp /app/api/.env /app/api/build/
+
 CMD [ "node","./build/index.js" ]

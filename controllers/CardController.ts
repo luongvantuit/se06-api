@@ -24,14 +24,76 @@ class CardController extends IController {
     }
 
     public async create(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+        const {
+            cardNumber,
+            cvv,
+            ownerName,
+        } = await req.body;
         return await Token.verify(req, res, async (req, res, auth) => {
-            const cards = await Card.find({ uid: auth.uid })
-
+            if (cardNumber === undefined)
+                return res.send(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.BODY_PROPERTY_EMPTY
+                    })
+                    .end();
+            const card = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
+            if (card !== null)
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: true,
+                        code: CodeResponse.METHOD_REQUEST_WRONG
+                    })
+                    .end();
+            const nCard = new Card({
+                cardNumber: cardNumber,
+                cvv: cvv,
+                ownerName: ownerName,
+                uid: auth.uid,
+            })
+            const rCard = await nCard.save();
+            return res.send(HttpStatusCode.OK)
+                .send({
+                    error: false,
+                    data: rCard,
+                })
+                .end();
         });
     }
 
-    public edit(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): void {
-
+    public async edit(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+        const {
+            cardNumber,
+            cvv,
+            ownerName,
+        } = await req.body;
+        return await Token.verify(req, res, async (req, res, auth) => {
+            if (cardNumber === undefined)
+                return res.send(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.BODY_PROPERTY_EMPTY
+                    })
+                    .end();
+            const oCard = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
+            if (oCard === null)
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: true,
+                        code: CodeResponse.CARD_NOT_FOUND
+                    })
+                    .end();
+            oCard.cardNumber = cardNumber ?? oCard.cardNumber;
+            oCard.cvv = cvv ?? oCard.cvv;
+            oCard.ownerName = ownerName ?? oCard.ownerName;
+            const rCard = await oCard.save();
+            return res.send(HttpStatusCode.OK)
+                .send({
+                    error: false,
+                    data: rCard,
+                })
+                .end();
+        });
     }
 
     public async destroy(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
