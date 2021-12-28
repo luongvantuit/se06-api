@@ -24,9 +24,40 @@ class CardController extends IController {
     }
 
     public async create(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+        const {
+            cardNumber,
+            cvv,
+            ownerName,
+        } = await req.body;
         return await Token.verify(req, res, async (req, res, auth) => {
-            const cards = await Card.find({ uid: auth.uid })
-
+            if (cardNumber === undefined)
+                return res.send(HttpStatusCode.BAD_REQUEST)
+                    .send({
+                        error: true,
+                        code: CodeResponse.BODY_PROPERTY_EMPTY
+                    })
+                    .end();
+            const card = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
+            if (card !== null)
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: true,
+                        code: CodeResponse.METHOD_REQUEST_WRONG
+                    })
+                    .end();
+            const nCard = new Card({
+                cardNumber: cardNumber,
+                cvv: cvv,
+                ownerName: ownerName,
+                uid: auth.uid,
+            })
+            const rCard = await nCard.save();
+            return res.send(HttpStatusCode.OK)
+                .send({
+                    error: false,
+                    data: rCard,
+                })
+                .end();
         });
     }
 
