@@ -40,6 +40,6 @@ API.delete('/product/:sid/:pid', json(), ProductController.destroy);
 
 // API upload file
 API.post('/upload', UploadFileController.create);
-API.post('/upload', UploadMultiFilesController.create);
+API.post('/uploads', UploadMultiFilesController.create);
 
 export default API;
