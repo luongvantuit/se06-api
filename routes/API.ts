@@ -27,7 +27,7 @@ API.delete('/shop/:sid', json(), ShopController.destroy);
 API.get('/cards', CardController.index);
 API.get('/card/:cid', CardController.show);
 API.post('/card', json(), CardController.create);
-API.put('/card/:cid', json(), CardController.update);
+API.put('/card', json(), CardController.update);
 API.delete('/card/:cid', json(), CardController.destroy);
 
 // API product
