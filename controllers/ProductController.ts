@@ -20,10 +20,102 @@ class ProductController extends IController {
             category
         } = await req.params;
         if (sid === undefined) {
-
+            if (category === undefined) {
+                const products = await Product.find().skip((Number(page) ?? 0) * (Number(limit) ?? 20)).limit(Number(limit) ?? 20);
+                const countDocuments: number = await Product.countDocuments();
+                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: false,
+                        data: products,
+                        maxPage: maxPage,
+                    })
+                    .end();
+            } else {
+                const products = await Product.aggregate([
+                    {
+                        $match: {
+                            classifies: {
+                                "$elemMatch": {
+                                    "$eq": category,
+                                }
+                            }
+                        },
+                        $skip: (Number(page) ?? 0) * (Number(limit) ?? 20),
+                        $limit: Number(limit) ?? 20,
+                    },
+                ]);
+                const allProducts = await Product.aggregate([
+                    {
+                        $match: {
+                            classifies: {
+                                "$elemMatch": {
+                                    "$eq": category,
+                                }
+                            }
+                        },
+                    },
+                ]);
+                const countDocuments: number = allProducts.length;
+                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: false,
+                        data: products,
+                        maxPage: maxPage,
+                    })
+                    .end();
+            }
         }
         else {
-
+            if (category === undefined) {
+                const products = await Product.find({ sid: sid }).skip((Number(page) ?? 0) * (Number(limit) ?? 20)).limit(Number(limit) ?? 20);
+                const countDocuments: number = products.length;
+                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: false,
+                        data: products,
+                        maxPage: maxPage,
+                    })
+                    .end();
+            } else {
+                const products = await Product.aggregate([
+                    {
+                        $match: {
+                            classifies: {
+                                "$elemMatch": {
+                                    "$eq": category,
+                                }
+                            },
+                            sid: sid
+                        },
+                        $skip: (Number(page) ?? 0) * (Number(limit) ?? 20),
+                        $limit: Number(limit) ?? 20,
+                    },
+                ]);
+                const allProducts = await Product.aggregate([
+                    {
+                        $match: {
+                            classifies: {
+                                "$elemMatch": {
+                                    "$eq": category,
+                                }
+                            },
+                            sid: sid
+                        },
+                    },
+                ]);
+                const countDocuments: number = allProducts.length;
+                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
+                return res.status(HttpStatusCode.OK)
+                    .send({
+                        error: false,
+                        data: products,
+                        maxPage: maxPage,
+                    })
+                    .end();
+            }
         }
     }
 
