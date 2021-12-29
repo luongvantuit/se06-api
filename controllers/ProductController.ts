@@ -74,8 +74,29 @@ class ProductController extends IController {
 
     }
 
-    public show(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): void {
-
+    public async show(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+        const { pid } = await req.params;
+        if (!ObjectId.isValid(pid))
+            return res.status(HttpStatusCode.BAD_REQUEST)
+                .send({
+                    error: true,
+                    code: CodeResponse.PARAM_WRONG_FORMAT,
+                })
+                .end();
+        const product = await Product.findById(pid);
+        if (product === null)
+            return res.status(HttpStatusCode.NOT_FOUND)
+                .send({
+                    error: true,
+                    code: CodeResponse.PRODUCT_NOT_FOUND,
+                })
+                .end();
+        return res.status(HttpStatusCode.OK)
+            .send({
+                error: false,
+                data: product
+            })
+            .end();
     }
 
 }
