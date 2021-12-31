@@ -13,15 +13,12 @@ __Base API for e-commerce application__
 
     * __MongoDB__
 
-        <p align="center"><img src="https://www.undernews.fr/wp-content/uploads/2017/01/mongo-db-logo.png"alt="Docker Image" height="120px"/>
+        <p align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png"alt="Docker Image" height="120px"/>
         </p>
 
 * __Tool__
 
     * __Docker__
-
-        <p align="center"><img src="https://github.com/nodejs/nodejs.dev/raw/main/src/images/logos/nodejs-logo-light-mode.svg" height="120px"/>
-        </p>
 
         <p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png"alt="Docker Image" height="120px"/>
         </p>
@@ -33,5 +30,3 @@ __Base API for e-commerce application__
 
 
 __`@github pages`__ 
-
-[__Docs__](https://luongvantuit.github.io/se06-api/docs)
