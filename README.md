@@ -2,27 +2,31 @@
 
 __Base API for e-commerce application__
 
-* __Framework__
+* __Environment__
 
-    * __Express__
+    * __Node JS__
 
-        <p align="center"><img src="https://expressjs.com/images/express-facebook-share.png" alt="Express JS" width=560/></p>
+        <p align="center"><img src="https://www.brainfuel.io/images/node-js-new.png"alt="Docker Image" height="120px">
+        </p>
 
 * __Database__
 
     * __MongoDB__
 
-        <p align="center"><img src="https://www.cloudsavvyit.com/p/uploads/2021/07/f5932bc2.jpg?width=1198&trim=1,1&bg-color=000&pad=1,1" alt="MongoDB" width=560/></p>
+        <p align="center"><img src="https://www.undernews.fr/wp-content/uploads/2017/01/mongo-db-logo.png"alt="Docker Image" height="120px">
+        </p>
 
 * __Tool__
 
     * __Docker__
 
-        <p align="center"><img src="https://logos-world.net/wp-content/uploads/2021/02/Docker-Symbol.png" alt="MongoDB" width=560/></p>
+        <p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png"alt="Docker Image" height="120px">
+        </p>
     
     * __Firebase__
 
-        <p align="center"><img src="https://firebase.google.com/downloads/brand-guidelines/PNG/logo-built_white.png" alt="MongoDB" width=560/></p>
+        <p align="center"><img src="https://cdn.iconscout.com/icon/free/png-256/firebase-1-282796.png"alt="Docker Image" height="120px">
+        </p>
 
 
 __`@github pages`__ 
