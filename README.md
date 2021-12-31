@@ -20,7 +20,7 @@ __Base API for e-commerce application__
 
     * __Docker__
 
-        <p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png"alt="Docker Image" height="120px"/>
+        <p align="center"><img src="https://cdn.worldvectorlogo.com/logos/docker.svg"alt="Docker Image" height="120px"/>
         </p>
     
     * __Firebase__
