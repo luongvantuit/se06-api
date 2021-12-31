@@ -6,7 +6,7 @@ __Base API for e-commerce application__
 
     * __Node JS__
 
-        <p align="center"><img src="https://www.brainfuel.io/images/node-js-new.png"alt="Docker Image" height="120px">
+        <p align="center"><img src="https://github.com/nodejs/nodejs.dev/raw/main/src/images/logos/nodejs-logo-light-mode.svg" height="120px">
         </p>
 
 * __Database__
@@ -30,3 +30,5 @@ __Base API for e-commerce application__
 
 
 __`@github pages`__ 
+
+[__Docs__](https://luongvantuit.github.io/se06-api/docs)
