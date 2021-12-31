@@ -14,11 +14,13 @@ class ProductController extends IController {
 
     public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
         const {
-            sid,
+            sid
+        } = await req.params;
+        const {
             limit,
             page,
             category
-        } = await req.params;
+        } = await req.query;
         if (sid === undefined) {
             if (category === undefined) {
                 const products = await Product.find().skip((Number(page) ?? 0) * (Number(limit) ?? 20)).limit(Number(limit) ?? 20);
