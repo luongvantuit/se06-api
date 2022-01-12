@@ -1,8 +1,5 @@
 import { Response } from "express";
 
-interface IResponse<
-    ResBody = any,
-    Locals extends Record<string, any> = Record<string, any>
-    > extends Response<ResBody, Locals> { }
+interface IResponse extends Response { }
 
 export default IResponse;

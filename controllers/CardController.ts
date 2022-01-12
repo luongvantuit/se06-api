@@ -1,7 +1,4 @@
-import { ParamsDictionary } from "express-serve-static-core";
 import { ObjectId } from "mongodb";
-import { ParsedQs } from "qs";
-import IBaseResponse from "../interfaces/vendors/IBaseResponse";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
@@ -11,7 +8,7 @@ import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 
 class CardController extends IController {
-    public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
+    public async index(req: IRequest, res: IResponse) {
         return await Token.verify(req, res, async (req, res, auth) => {
             const cards = await Card.find({ uid: auth.uid })
             return res.status(HttpStatusCode.OK)
@@ -23,7 +20,7 @@ class CardController extends IController {
         });
     }
 
-    public async create(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async create(req: IRequest, res: IResponse) {
         const {
             cardNumber,
             cvv,
@@ -61,7 +58,7 @@ class CardController extends IController {
         });
     }
 
-    public async edit(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async edit(req: IRequest, res: IResponse) {
         const {
             cardNumber,
             cvv,
@@ -96,7 +93,7 @@ class CardController extends IController {
         });
     }
 
-    public async destroy(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async destroy(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid))
             return await res.status(HttpStatusCode.BAD_REQUEST)
@@ -129,7 +126,7 @@ class CardController extends IController {
         });
     }
 
-    public async show(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
+    public async show(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid))
             return await res.status(HttpStatusCode.BAD_REQUEST)

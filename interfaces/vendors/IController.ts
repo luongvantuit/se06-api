@@ -11,7 +11,7 @@ abstract class IController {
      * METHOD GET
      */
 
-    public index(req: IRequest, res: IResponse) {
+    public index(req: IRequest, res: IResponse): any {
 
     };
 
@@ -19,7 +19,7 @@ abstract class IController {
     * METHOD GET
     */
 
-    public create(req: IRequest, res: IResponse) {
+    public create(req: IRequest, res: IResponse): any {
 
     };
 
@@ -27,7 +27,7 @@ abstract class IController {
     * METHOD POST
     */
 
-    public store(req: IRequest, res: IResponse) {
+    public store(req: IRequest, res: IResponse): any {
 
     };
 
@@ -36,7 +36,7 @@ abstract class IController {
     * METHOD GET
     */
 
-    public show(req: IRequest, res: IResponse) {
+    public show(req: IRequest, res: IResponse): any {
 
     };
 
@@ -44,7 +44,7 @@ abstract class IController {
     * METHOD GET
     */
 
-    public edit(req: IRequest, res: IResponse) {
+    public edit(req: IRequest, res: IResponse): any {
 
     };
 
@@ -52,7 +52,7 @@ abstract class IController {
     * METHOD PUT/PATCH
     */
 
-    public update(req: IRequest, res: IResponse) {
+    public update(req: IRequest, res: IResponse): any {
 
     };
 
@@ -60,7 +60,7 @@ abstract class IController {
     * METHOD DELETE
     */
 
-    public destroy(req: IRequest, res: IResponse) {
+    public destroy(req: IRequest, res: IResponse): any {
 
     };
 }

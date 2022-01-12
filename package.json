@@ -6,8 +6,8 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' ./index.ts",
-        "build": "rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json && cp ./.env ./build",
-        "prestart": "rm -rf ./build && tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json && cp ./.env ./build",
+        "build": "rm -rf ./build && npx tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json && cp ./.env ./build",
+        "prestart": "rm -rf ./build && npx tsc && cp -R ./resources ./build/resources && cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json && cp ./.env ./build",
         "start": "node ./build/index.js"
     },
     "keywords": [],
