@@ -1,6 +1,4 @@
-import { ParamsDictionary } from "express-serve-static-core";
 import { ObjectId } from "mongodb";
-import { ParsedQs } from "qs";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
@@ -12,7 +10,7 @@ import Token from "../perform/Token";
 
 class ProductController extends IController {
 
-    public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async index(req: IRequest, res: IResponse) {
         const {
             sid
         } = await req.params;
@@ -121,7 +119,7 @@ class ProductController extends IController {
         }
     }
 
-    public async create(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async create(req: IRequest, res: IResponse) {
         const { sid } = await req.params;
         const {
             description,
@@ -183,7 +181,7 @@ class ProductController extends IController {
         });
     }
 
-    public async destroy(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async destroy(req: IRequest, res: IResponse) {
         const { sid, pid } = await req.params;
 
         if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid))
@@ -222,7 +220,7 @@ class ProductController extends IController {
         });
     }
 
-    public async edit(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async edit(req: IRequest, res: IResponse) {
         const { sid, pid } = await req.params;
         const {
             description,
@@ -288,7 +286,7 @@ class ProductController extends IController {
         });
     }
 
-    public async show(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<any, Record<string, any>>): Promise<void> {
+    public async show(req: IRequest, res: IResponse) {
         const { pid } = await req.params;
         if (!ObjectId.isValid(pid))
             return res.status(HttpStatusCode.BAD_REQUEST)

@@ -1,7 +1,4 @@
 import { validate } from "email-validator";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
-import IBaseResponse from "../interfaces/vendors/IBaseResponse";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
@@ -10,7 +7,7 @@ import HttpStatusCode from "../perform/HttpStatusCode";
 import Firebase from "../services/auths/Firebase";
 
 class CheckEmailRecordController extends IController {
-    public async index(req: IRequest<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: IResponse<IBaseResponse<any>, Record<string, any>>): Promise<void> {
+    public async index(req: IRequest, res: IResponse) {
         const { email } = req.body;
         if (!validate(email))
             return res.status(HttpStatusCode.BAD_REQUEST)

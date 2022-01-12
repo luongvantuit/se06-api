@@ -4,20 +4,20 @@ WORKDIR /app/api
 
 COPY . .
 
-RUN npm i -g typescript
-
 RUN yarn install
 
 RUN cat .env.docker >> .env
 
-RUN rm -rf ./build
+# RUN rm -rf ./build
 
-RUN tsc
+# RUN npx tsc
 
-RUN cp -R ./resources ./build/resources 
+# RUN cp -R ./resources ./build/resources 
 
-RUN cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json
+# RUN cat ./serviceAccountKey.json >> ./build/serviceAccountKey.json
 
-RUN cp /app/api/.env /app/api/build/
+# RUN cp /app/api/.env /app/api/build/
 
-CMD [ "node","./build/index.js" ]
+# CMD [ "node","./build/index.js" ]
+
+CMD [ "yarn","start" ]

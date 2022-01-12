@@ -6,7 +6,7 @@ import CodeResponse from "./CodeResponse";
 import HttpStatusCode from "./HttpStatusCode";
 
 class Token {
-    public async verify(req: IRequest, res: IResponse, successed: (req: IRequest, res: IResponse, auth: DecodedIdToken) => void, failed?: (req: IRequest, res: IResponse) => void): Promise<void> {
+    public async verify(req: IRequest, res: IResponse, successed: (req: IRequest, res: IResponse, auth: DecodedIdToken) => void, failed?: (req: IRequest, res: IResponse) => void) {
         const { token } = await req.headers;
         if (token === undefined) {
             if (failed === undefined)
