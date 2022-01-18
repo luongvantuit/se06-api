@@ -21,7 +21,7 @@ const UserSchema = new Schema({
     birthday: { type: Date },
     displayName: { type: String },
     displayPhoto: { type: String },
-    displayConver: { type: String },
+    displayCover: { type: String },
     bio: { type: String },
     email: { type: String, required: true },
     address: { type: String },

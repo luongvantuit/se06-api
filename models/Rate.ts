@@ -19,7 +19,7 @@ const RateSchema = new Schema({
     uid: { type: String, required: true },
     pid: { type: String, required: true },
     rateCurrency: { type: Number, required: true },
-    rates: [{ rate: Number, message: String, default: [] }],
+    rates: [{ rate: { type: Number, required: true }, message: { type: String, required: true }, default: [] }],
 })
 
 const Rate: Model<RateModel> = model<RateModel>('rate', RateSchema);

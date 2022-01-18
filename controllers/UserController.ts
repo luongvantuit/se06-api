@@ -26,43 +26,36 @@ class UserController extends IController {
 
     public async show(req: IRequest, res: IResponse) {
         const { uid } = await req.params;
-        if (!uid) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
-                error: true,
-                code: CodeResponse.PARAM_EMPTY,
+        const user = await User.findOne({
+            uid: uid
+        });
+        if (user) {
+            const resUser: { _id: string } & IUser = {
+                _id: user._id.toString(),
+                uid: uid,
+                displayName: user.displayName,
+                address: user.address,
+                displayPhoto: user.displayPhoto ?? `https://gravatar.com/avatar/${uid}?s=400&d=identicon`,
+                displayPhotoCover: user.displayPhotoCover,
+                bio: user.bio,
+                birthday: user.birthday,
+                email: user.email,
+            }
+            await res.status(HttpStatusCode.OK).send({
+                error: false,
+                data: resUser,
             });
         } else {
-            const user = await User.findOne({
-                uid: uid
-            })
-            if (user) {
-                const resUser: { _id: string } & IUser = {
-                    _id: user._id.toString(),
-                    uid: uid,
-                    displayName: user.displayName,
-                    address: user.address,
-                    displayPhoto: user.displayPhoto ?? `https://gravatar.com/avatar/${uid}?s=400&d=identicon`,
-                    displayPhotoCover: user.displayPhotoCover,
-                    bio: user.bio,
-                    birthday: user.birthday,
-                    email: user.email,
-                }
-                await res.status(HttpStatusCode.OK).send({
-                    error: false,
-                    data: resUser,
-                });
-            } else {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
-                    error: true,
-                    code: CodeResponse.USER_INFORMATION_EMPTY,
-                });
-            }
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.USER_INFORMATION_EMPTY,
+            });
         }
     }
 
 
     public async create(req: IRequest, res: IResponse) {
-        return await Token.verify(req, res, async (req, res, auth) => {
+        await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
             if (oldUser) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
@@ -89,7 +82,7 @@ class UserController extends IController {
                     email: auth.email,
                 });
                 const error = await newUser.validateSync();
-                if (error === null) {
+                if (!error) {
                     const resBody = await newUser.save();
                     await res.status(HttpStatusCode.OK).send({
                         error: false,
