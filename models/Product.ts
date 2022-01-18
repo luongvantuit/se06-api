@@ -27,7 +27,7 @@ const ProductSchema = new Schema({
     photos: [{ type: { type: String, required: true }, default: [] }],
     address: { type: String },
     classifies: [{ price: { type: Number, required: true }, displayName: { type: String, required: true }, default: [] }],
-    categories: [{ type: String, default: true }]
+    categories: [{ type: String, default: true, enum: ['food', 'other', 'fashion', 'men-s-fashion', 'women-s-fashion', 'sport', 'electronice-device','book'] }]
 })
 
 const Product: Model<ProductModel> = model<ProductModel>('product', ProductSchema);
