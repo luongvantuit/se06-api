@@ -5,6 +5,8 @@ import ShopController from "../controllers/ShopController";
 import UploadFileController from "../controllers/UploadFileController";
 import UploadMultiFilesController from "../controllers/UploadMultiFilesController";
 import UserController from "../controllers/UserController";
+import CodeResponse from "../perform/CodeResponse";
+import HttpStatusCode from "../perform/HttpStatusCode";
 const API: Router = Router();
 // All api information user
 API.get('/user', UserController.index);
@@ -38,5 +40,12 @@ API.delete('/product/:sid/:pid', json(), ProductController.destroy);
 // API upload file
 API.post('/upload', UploadFileController.create);
 API.post('/uploads', UploadMultiFilesController.create);
+
+API.use('*', async function (req, res) {
+    await res.status(HttpStatusCode.NOT_FOUND).send({
+        error: true,
+        code: CodeResponse.NOT_FOUND
+    })
+})
 
 export default API;
