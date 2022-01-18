@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
-import Card from "../models/Card";
+import Card, { ICard } from "../models/Card";
 import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
@@ -11,12 +11,12 @@ class CardController extends IController {
     public async index(req: IRequest, res: IResponse) {
         await Token.verify(req, res, async (req, res, auth) => {
             const cards = await Card.find({ uid: auth.uid })
-            const responseCards: Array<any> = [];
+            const responseCards: Array<{ _id: string } & ICard> = [];
             for (let index = 0; index < cards.length; index++) {
                 responseCards.push({
                     cardNumber: cards[index].cardNumber.substring(0, 3),
                     ownerName: cards[index].ownerName,
-                    _id: cards[index]._id,
+                    _id: cards[index]._id.toString(),
                 });
             }
             res.status(HttpStatusCode.OK).send({
@@ -61,10 +61,10 @@ class CardController extends IController {
                         });
                     } else {
                         const rCard = await nCard.save();
-                        const responseCard = {
+                        const responseCard: { _id: string } & ICard = {
                             cardNumber: rCard.cardNumber.substring(0, 3),
                             ownerName: rCard.ownerName,
-                            _id: rCard._id,
+                            _id: rCard._id.toString(),
                         }
                         res.status(HttpStatusCode.OK).send({
                             error: false,
@@ -108,10 +108,10 @@ class CardController extends IController {
                         });
                     } else {
                         const rCard = await oCard.save();
-                        const responseCard = {
+                        const responseCard: { _id: string } & ICard = {
                             cardNumber: rCard.cardNumber.substring(0, 3),
                             ownerName: rCard.ownerName,
-                            _id: rCard._id,
+                            _id: rCard._id.toJSON(),
                         }
                         res.status(HttpStatusCode.OK).send({
                             error: false,
@@ -143,10 +143,10 @@ class CardController extends IController {
                     });
                 } else {
                     const oldCard = await card.delete();
-                    const responseCard = {
+                    const responseCard: { _id: string } & ICard = {
                         cardNumber: oldCard.cardNumber.substring(0, 3),
                         ownerName: oldCard.ownerName,
-                        _id: oldCard._id,
+                        _id: oldCard._id.toString(),
                     }
                     await res.status(HttpStatusCode.OK).send({
                         error: false,
@@ -176,10 +176,10 @@ class CardController extends IController {
                         code: CodeResponse.CARD_NOT_FOUND,
                     });
                 } else {
-                    const responseCard = {
+                    const responseCard: { _id: string } & ICard = {
                         cardNumber: card.cardNumber.substring(0, 3),
                         ownerName: card.ownerName,
-                        _id: card._id,
+                        _id: card._id.toString(),
                     }
                     await res.status(HttpStatusCode.OK).send({
                         error: false,
