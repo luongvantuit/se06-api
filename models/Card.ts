@@ -2,9 +2,9 @@ import { model, Model, Schema } from "mongoose";
 
 interface ICard {
     cardNumber: string,
-    cvv: string,
+    cvv?: string,
     ownerName: string,
-    uid: string,
+    uid?: string,
 }
 
 interface CardModel extends Document, ICard {

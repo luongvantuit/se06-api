@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
-import Card from "../models/Card";
+import Card, { ICard } from "../models/Card";
 import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
@@ -11,9 +11,16 @@ class CardController extends IController {
     public async index(req: IRequest, res: IResponse) {
         await Token.verify(req, res, async (req, res, auth) => {
             const cards = await Card.find({ uid: auth.uid })
+            const responseCard: Array<ICard> = [];
+            for (let index = 0; index < cards.length; index++) {
+                responseCard.push({
+                    cardNumber: cards[index].cardNumber.substring(0, 3),
+                    ownerName: cards[index].ownerName
+                });
+            }
             res.status(HttpStatusCode.OK).send({
                 error: false,
-                data: cards,
+                data: responseCard,
             });
         });
     }
@@ -125,9 +132,13 @@ class CardController extends IController {
                     });
                 } else {
                     const oldCard = await card.delete();
+                    const responseCard: ICard = {
+                        cardNumber: oldCard.cardNumber.substring(0, 3),
+                        ownerName: oldCard.ownerName,
+                    }
                     await res.status(HttpStatusCode.OK).send({
                         error: false,
-                        data: oldCard,
+                        data: responseCard,
                     });
                 }
             });
@@ -153,9 +164,13 @@ class CardController extends IController {
                         code: CodeResponse.CARD_NOT_FOUND,
                     });
                 } else {
+                    const responseCard: ICard = {
+                        cardNumber: card.cardNumber.substring(0, 3),
+                        ownerName: card.ownerName,
+                    }
                     await res.status(HttpStatusCode.OK).send({
                         error: false,
-                        data: card,
+                        data: responseCard,
                     });
                 }
             });
