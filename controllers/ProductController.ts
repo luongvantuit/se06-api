@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
-import Product, { Classify } from "../models/Product";
+import Product from "../models/Product";
 import Shop from "../models/Shop";
 import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
@@ -19,18 +19,18 @@ class ProductController extends IController {
             page,
             category
         } = await req.query;
-        if (sid === undefined) {
-            if (category === undefined) {
-                const products = await Product.find().skip((Number(page) ?? 0) * (Number(limit) ?? 20)).limit(Number(limit) ?? 20);
+        const mLimit: number = Number(limit ?? 0);
+        const mPage: number = Number(page ?? 0);
+        if (!sid) {
+            if (!category) {
+                const products = await Product.find().skip(mLimit * mPage).limit(mLimit);
                 const countDocuments: number = await Product.countDocuments();
-                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
-                return res.status(HttpStatusCode.OK)
-                    .send({
-                        error: false,
-                        data: products,
-                        maxPage: maxPage,
-                    })
-                    .end();
+                const maxPage: number = Math.ceil(countDocuments / mLimit);
+                await res.status(HttpStatusCode.OK).send({
+                    error: false,
+                    data: products,
+                    maxPage: maxPage,
+                });
             } else {
                 const products = await Product.aggregate([
                     {
@@ -41,8 +41,8 @@ class ProductController extends IController {
                                 }
                             }
                         },
-                        $skip: (Number(page) ?? 0) * (Number(limit) ?? 20),
-                        $limit: Number(limit) ?? 20,
+                        $skip: mLimit * mPage,
+                        $limit: mLimit,
                     },
                 ]);
                 const allProducts = await Product.aggregate([
@@ -57,28 +57,24 @@ class ProductController extends IController {
                     },
                 ]);
                 const countDocuments: number = allProducts.length;
-                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
-                return res.status(HttpStatusCode.OK)
-                    .send({
-                        error: false,
-                        data: products,
-                        maxPage: maxPage,
-                    })
-                    .end();
+                const maxPage: number = Math.ceil(countDocuments / mLimit);
+                await res.status(HttpStatusCode.OK).send({
+                    error: false,
+                    data: products,
+                    maxPage: maxPage,
+                });
             }
         }
         else {
-            if (category === undefined) {
-                const products = await Product.find({ sid: sid }).skip((Number(page) ?? 0) * (Number(limit) ?? 20)).limit(Number(limit) ?? 20);
+            if (!category) {
+                const products = await Product.find({ sid: sid }).skip(mLimit * mPage).limit(mLimit);
                 const countDocuments: number = products.length;
-                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
-                return res.status(HttpStatusCode.OK)
-                    .send({
-                        error: false,
-                        data: products,
-                        maxPage: maxPage,
-                    })
-                    .end();
+                const maxPage: number = Math.ceil(countDocuments / mLimit);
+                await res.status(HttpStatusCode.OK).send({
+                    error: false,
+                    data: products,
+                    maxPage: maxPage,
+                });
             } else {
                 const products = await Product.aggregate([
                     {
@@ -90,8 +86,8 @@ class ProductController extends IController {
                             },
                             sid: sid
                         },
-                        $skip: (Number(page) ?? 0) * (Number(limit) ?? 20),
-                        $limit: Number(limit) ?? 20,
+                        $skip: mLimit * mPage,
+                        $limit: mLimit,
                     },
                 ]);
                 const allProducts = await Product.aggregate([
@@ -107,14 +103,12 @@ class ProductController extends IController {
                     },
                 ]);
                 const countDocuments: number = allProducts.length;
-                const maxPage: number = Math.ceil(countDocuments / Number(limit ?? 20));
-                return res.status(HttpStatusCode.OK)
-                    .send({
-                        error: false,
-                        data: products,
-                        maxPage: maxPage,
-                    })
-                    .end();
+                const maxPage: number = Math.ceil(countDocuments / mLimit);
+                await res.status(HttpStatusCode.OK).send({
+                    error: false,
+                    data: products,
+                    maxPage: maxPage,
+                });
             }
         }
     }
@@ -129,95 +123,80 @@ class ProductController extends IController {
             classifies,
             categories,
         } = await req.body;
-
-        if ((description !== undefined && typeof description !== 'string')
-            || (displayName !== undefined && typeof displayName !== 'string')
-            || (address !== undefined && typeof address !== 'string')
-            || (categories !== undefined && (!Array.isArray(categories) || !this.verifyCategories(categories)))
-            || (classifies !== undefined && (!Array.isArray(classifies) || !this.verifyClassifies(classifies)))
-            || (photos !== undefined && (!Array.isArray(photos) || !this.verifyPhotos(photos))))
-            return res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
-                })
-                .end();
-
-        if (!ObjectId.isValid(sid))
-            return res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                })
-                .end();
-
-        return Token.verify(req, res, async (req, res, auth) => {
-            const shop = await Shop.findById(sid);
-            if (shop === null || shop.uid !== auth.uid)
-                return res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
+        if (!ObjectId.isValid(sid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+            });
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const shop = await Shop.findById(sid);
+                if (!shop || shop.uid !== auth.uid) {
+                    await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.SHOP_NOT_FOUND,
+                    });
+                } else {
+                    const product = new Product({
+                        sid: sid,
+                        description: description,
+                        displayName: displayName,
+                        photos: photos,
+                        address: address,
+                        classifies: classifies,
+                        categories: categories,
                     })
-                    .end();
-
-            const product = new Product({
-                sid: sid,
-                description: description,
-                displayName: displayName,
-                photos: photos,
-                address: address,
-                classifies: classifies,
-                categories: categories,
-            })
-
-            const newProduct = await product.save();
-            return res.status(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: newProduct,
-                })
-                .end();
-        });
+                    const error = await product.validateSync();
+                    if (!error) {
+                        const newProduct = await product.save();
+                        await res.status(HttpStatusCode.OK).send({
+                            error: false,
+                            data: newProduct,
+                        });
+                    } else {
+                        await res.status(HttpStatusCode.BAD_REQUEST).send({
+                            error: true,
+                            data: error,
+                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
+                        });
+                    }
+                }
+            });
+        }
     }
 
     public async destroy(req: IRequest, res: IResponse) {
         const { sid, pid } = await req.params;
-
-        if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid))
-            return res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                })
-                .end();
-
-        return Token.verify(req, res, async (req, res, auth) => {
-            const shop = await Shop.findById(sid);
-            if (shop === null || shop.uid !== auth.uid)
-                return res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
+        if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+            });
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const shop = await Shop.findById(sid);
+                if (!shop || shop.uid !== auth.uid) {
+                    await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.SHOP_NOT_FOUND,
-                    })
-                    .end();
-            const product = await Product.findById(pid);
-            if (product === null)
-                return res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
-                        error: true,
-                        code: CodeResponse.PRODUCT_NOT_FOUND,
-                    })
-                    .end();
-
-            const oldProduct = await product.delete();
-            return res.status(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: oldProduct,
-                })
-                .end();
-        });
+                    });
+                } else {
+                    const product = await Product.findById(pid);
+                    if (!product) {
+                        await res.status(HttpStatusCode.NOT_FOUND).send({
+                            error: true,
+                            code: CodeResponse.PRODUCT_NOT_FOUND,
+                        });
+                    } else {
+                        const oldProduct = await product.delete();
+                        await res.status(HttpStatusCode.OK).send({
+                            error: false,
+                            data: oldProduct,
+                        });
+                    }
+                }
+            });
+        }
     }
 
     public async edit(req: IRequest, res: IResponse) {
@@ -231,115 +210,75 @@ class ProductController extends IController {
             categories,
         } = await req.body;
 
-        if ((description !== undefined && typeof description !== 'string')
-            || (displayName !== undefined && typeof displayName !== 'string')
-            || (address !== undefined && typeof address !== 'string')
-            || (categories !== undefined && (!Array.isArray(categories) || !this.verifyCategories(categories)))
-            || (classifies !== undefined && (!Array.isArray(classifies) || !this.verifyClassifies(classifies)))
-            || (photos !== undefined && (!Array.isArray(photos) || !this.verifyPhotos(photos))))
-            return res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
-                })
-                .end();
-
-        if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid))
-            return res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                })
-                .end();
-        return Token.verify(req, res, async (req, res, auth) => {
-            const shop = await Shop.findById(sid);
-            if (shop === null || shop.uid !== auth.uid)
-                return res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
+        if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+            });
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const shop = await Shop.findById(sid);
+                if (!shop || shop.uid !== auth.uid) {
+                    await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.SHOP_NOT_FOUND,
-                    })
-                    .end();
-            const product = await Product.findById(pid);
-            if (product === null)
-                return res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
-                        error: true,
-                        code: CodeResponse.PRODUCT_NOT_FOUND,
-                    })
-                    .end();
-
-            product.description = description ?? product.description;
-            product.displayName = displayName ?? product.displayName;
-            product.photos = photos ?? product.photos;
-            product.address = address ?? product.address;
-            product.classifies = classifies ?? product.classifies;
-            product.categories = categories ?? product.categories;
-
-            const newProduct = await product.save();
-            return res.status(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: newProduct,
-                })
-                .end();
-        });
+                    });
+                } else {
+                    const product = await Product.findById(pid);
+                    if (!product) {
+                        await res.status(HttpStatusCode.NOT_FOUND).send({
+                            error: true,
+                            code: CodeResponse.PRODUCT_NOT_FOUND,
+                        });
+                    } else {
+                        product.description = description ?? product.description;
+                        product.displayName = displayName ?? product.displayName;
+                        product.photos = photos ?? product.photos;
+                        product.address = address ?? product.address;
+                        product.classifies = classifies ?? product.classifies;
+                        product.categories = categories ?? product.categories;
+                        const error = await product.validateSync();
+                        if (!error) {
+                            const newProduct = await product.save();
+                            await res.status(HttpStatusCode.OK).send({
+                                error: false,
+                                data: newProduct,
+                            });
+                        } else {
+                            await res.status(HttpStatusCode.OK).send({
+                                error: false,
+                                data: error,
+                                code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
+                            });
+                        }
+                    }
+                }
+            });
+        }
     }
 
     public async show(req: IRequest, res: IResponse) {
         const { pid } = await req.params;
-        if (!ObjectId.isValid(pid))
-            return res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                })
-                .end();
-        const product = await Product.findById(pid);
-        if (product === null)
-            return res.status(HttpStatusCode.NOT_FOUND)
-                .send({
+        if (!ObjectId.isValid(pid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+            });
+        } else {
+            const product = await Product.findById(pid);
+            if (!product) {
+                await res.status(HttpStatusCode.NOT_FOUND).send({
                     error: true,
                     code: CodeResponse.PRODUCT_NOT_FOUND,
-                })
-                .end();
-        return res.status(HttpStatusCode.OK)
-            .send({
-                error: false,
-                data: product
-            })
-            .end();
-    }
-
-    public verifyPhotos(photos: Array<any>): boolean {
-        for (let index = 0; index < photos.length; index++) {
-            try {
-                new URL(photos[index])
-            } catch (error: any) {
-                return false
+                });
+            } else {
+                await res.status(HttpStatusCode.OK).send({
+                    error: false,
+                    data: product
+                });
             }
         }
-        return true;
     }
-
-    public verifyClassifies(classifies: Array<any>): boolean {
-        for (let index = 0; index < classifies.length; index++) {
-            const classify: Classify = classifies[index];
-            if (isNaN(classify.price)
-                || (classify.displayName !== undefined && typeof classify.displayName !== 'string'))
-                return false;
-        }
-        return true;
-    }
-
-    public verifyCategories(categories: Array<any>): boolean {
-        for (let index = 0; index < categories.length; index++) {
-            if (typeof categories[index] !== 'string')
-                return false;
-        }
-        return true;
-    }
-
 }
 
 
