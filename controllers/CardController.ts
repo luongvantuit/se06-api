@@ -76,7 +76,7 @@ class CardController extends IController {
         });
     }
 
-    public async edit(req: IRequest, res: IResponse) {
+    public async update(req: IRequest, res: IResponse) {
         const {
             cardNumber,
             cvv,

@@ -1,4 +1,4 @@
-import { model, Model, Schema } from "mongoose";
+import { model, Model, Schema, Document } from "mongoose";
 
 interface IShop {
     uid: string,
@@ -15,7 +15,7 @@ interface ShopModel extends IShop, Document {
 
 const ShopSchema = new Schema({
     uid: { type: String, required: true },
-    displayName: { type: String },
+    displayName: { type: String, required: true },
     displayPhoto: { type: String },
     displayPhotoCover: { type: String },
     created: { type: Date, required: true },

@@ -14,6 +14,7 @@ enum CodeResponse {
     SHOP_NOT_FOUND = "shop/not/found",
     CARD_NOT_FOUND = "card/not/found",
     UPLOAD_ERROR = "upload/error",
+    NOT_FOUND = "not/found",
 }
 
 export default CodeResponse;
