@@ -23,7 +23,6 @@ class Express {
 
     private mountRoutes(): void {
         this.app = Routes.mountAPI(this.app);
-        this.app = Routes.mountWeb(this.app);
     }
 
     public initialization(): void {

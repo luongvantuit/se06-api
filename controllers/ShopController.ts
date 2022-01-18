@@ -9,48 +9,51 @@ import CodeResponse from "../perform/CodeResponse";
 
 class ShopController extends IController {
     public async index(req: IRequest, res: IResponse) {
-        return await Token.verify(req, res, async (req, res, auth) => {
-            const shops = await Shop.find({ uid: auth.uid });
-            return res.status(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: shops,
-                })
-                .end();
+        const { uid } = await req.params;
+        const { limit, page } = await req.query;
+        const mLimit: number = Number(limit ?? 10);
+        const mPage: number = Number(page ?? 0);
+        const shops = await Shop.find({ uid: uid });
+        const maxPage = Math.ceil(shops.length / mLimit);
+        const responseShops: Array<any> = []
+        for (let index: number = mLimit * mPage; index < shops.length; index++) {
+            responseShops.push(shops[index])
+        }
+        res.status(HttpStatusCode.OK).send({
+            error: false,
+            data: responseShops,
+            maxPage: maxPage,
         });
     }
 
     public async show(req: IRequest, res: IResponse) {
         const { sid } = await req.params;
-
-        if (!ObjectId.isValid(sid))
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                    error: true,
-                })
-                .end();
-        const shop = await Shop.findById(sid);
-        if (shop === null)
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
+        if (!ObjectId.isValid(sid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+                error: true,
+            });
+        } else {
+            const shop = await Shop.findById(sid);
+            if (!shop) {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
                     code: CodeResponse.SHOP_NOT_FOUND,
-                })
-                .end();
-        const resBody: any = {
-            created: shop.created,
-            description: shop.description,
-            displayName: shop.displayName,
-            displayPhoto: shop.displayPhoto,
-            displayPhotoCover: shop.displayPhotoCover,
+                });
+            } else {
+                const resBody: any = {
+                    created: shop.created,
+                    description: shop.description,
+                    displayName: shop.displayName,
+                    displayPhoto: shop.displayPhoto,
+                    displayPhotoCover: shop.displayPhotoCover,
+                }
+                await res.status(HttpStatusCode.OK).send({
+                    error: false,
+                    data: resBody,
+                });
+            }
         }
-        return await res.status(HttpStatusCode.OK)
-            .send({
-                error: false,
-                data: resBody,
-            })
-            .end();
     }
 
     public async create(req: IRequest, res: IResponse) {
@@ -60,7 +63,7 @@ class ShopController extends IController {
             displayPhoto,
             displayPhotoCover,
         } = await req.body;
-        return await Token.verify(req, res, async (req, res, auth) => {
+        await Token.verify(req, res, async (req, res, auth) => {
             const newShop = new Shop({
                 created: Date.now(),
                 uid: auth.uid,
@@ -69,13 +72,20 @@ class ShopController extends IController {
                 displayPhoto: displayPhoto,
                 displayPhotoCover: displayPhotoCover,
             })
-            const shop = await newShop.save();
-            return await res.status(HttpStatusCode.OK)
-                .send({
+            const error = await newShop.validateSync();
+            if (!error) {
+                const shop = await newShop.save();
+                await res.status(HttpStatusCode.OK).send({
                     error: false,
                     data: shop,
-                })
-                .end();
+                });
+            } else {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    data: error,
+                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                });
+            }
         })
     }
 
@@ -87,62 +97,67 @@ class ShopController extends IController {
             displayPhoto,
             displayPhotoCover,
         } = await req.body;
-        return await Token.verify(req, res, async (req, res, auth) => {
-            if (!ObjectId.isValid(sid))
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        code: CodeResponse.PARAM_WRONG_FORMAT,
-                        error: true,
-                    })
-                    .end();
-            const oldShop = await Shop.findById(sid)
-            if (oldShop === null || oldShop.uid === auth.uid)
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
+        await Token.verify(req, res, async (req, res, auth) => {
+            if (!ObjectId.isValid(sid)) {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    code: CodeResponse.PARAM_WRONG_FORMAT,
+                    error: true,
+                });
+            } else {
+                const oldShop = await Shop.findById(sid)
+                if (!oldShop || oldShop.uid !== auth.uid) {
+                    await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
                         code: CodeResponse.SHOP_NOT_FOUND,
-                    })
-                    .end();
-            oldShop.description = description ?? oldShop.description;
-            oldShop.displayName = displayName ?? oldShop.displayName;
-            oldShop.displayPhoto = displayPhoto ?? oldShop.displayPhoto;
-            oldShop.displayPhotoCover = displayPhotoCover ?? oldShop.displayPhotoCover;
-            const newShop = await oldShop.save();
-            return await res.status(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: newShop,
-                })
-                .end();
+                    });
+                } else {
+                    oldShop.description = description ?? oldShop.description;
+                    oldShop.displayName = displayName ?? oldShop.displayName;
+                    oldShop.displayPhoto = displayPhoto ?? oldShop.displayPhoto;
+                    oldShop.displayPhotoCover = displayPhotoCover ?? oldShop.displayPhotoCover;
+                    const error = await oldShop.validateSync();
+                    if (!error) {
+                        const newShop = await oldShop.save();
+                        await res.status(HttpStatusCode.OK).send({
+                            error: false,
+                            data: newShop,
+                        });
+                    } else {
+                        await res.status(HttpStatusCode.BAD_REQUEST).send({
+                            error: true,
+                            data: error,
+                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                        });
+                    }
+                }
+            }
         })
     }
 
     public async destroy(req: IRequest, res: IResponse) {
         const { sid } = await req.params;
-        if (!ObjectId.isValid(sid))
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                    error: true,
-                })
-                .end();
-        return await Token.verify(req, res, async (req, res, auth) => {
-            const shop = await Shop.findById(sid);
-            if (shop === null || shop.uid !== auth.uid)
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
+        if (!ObjectId.isValid(sid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+                error: true,
+            });
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const shop = await Shop.findById(sid);
+                if (!shop || shop.uid !== auth.uid) {
+                    await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
                         code: CodeResponse.SHOP_NOT_FOUND,
-                    })
-                    .end();
-            const oldShop = await shop.delete();
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: false,
-                    data: oldShop,
-                })
-                .end();
-        })
+                    });
+                } else {
+                    const oldShop = await shop.delete();
+                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                        error: false,
+                        data: oldShop,
+                    });
+                }
+            })
+        }
     }
 
 }

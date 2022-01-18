@@ -2,21 +2,27 @@ import { ObjectId } from "mongodb";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
-import Card from "../models/Card";
+import Card, { ICard } from "../models/Card";
 import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 
 class CardController extends IController {
     public async index(req: IRequest, res: IResponse) {
-        return await Token.verify(req, res, async (req, res, auth) => {
+        await Token.verify(req, res, async (req, res, auth) => {
             const cards = await Card.find({ uid: auth.uid })
-            return res.status(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: cards,
-                })
-                .end();
+            const responseCards: Array<{ _id: string } & ICard> = [];
+            for (let index = 0; index < cards.length; index++) {
+                responseCards.push({
+                    cardNumber: cards[index].cardNumber.substring(0, 3),
+                    ownerName: cards[index].ownerName,
+                    _id: cards[index]._id.toString(),
+                });
+            }
+            res.status(HttpStatusCode.OK).send({
+                error: false,
+                data: responseCards,
+            });
         });
     }
 
@@ -26,35 +32,47 @@ class CardController extends IController {
             cvv,
             ownerName,
         } = await req.body;
-        return await Token.verify(req, res, async (req, res, auth) => {
-            if (cardNumber === undefined)
-                return res.send(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        code: CodeResponse.BODY_PROPERTY_EMPTY
-                    })
-                    .end();
-            const card = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
-            if (card !== null)
-                return res.status(HttpStatusCode.OK)
-                    .send({
+        await Token.verify(req, res, async (req, res, auth) => {
+            if (!cardNumber) {
+                res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.BODY_PROPERTY_EMPTY
+                });
+            } else {
+                const card = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
+                if (!card) {
+                    res.status(HttpStatusCode.OK).send({
                         error: true,
                         code: CodeResponse.METHOD_REQUEST_WRONG
+                    });
+                } else {
+                    const nCard = new Card({
+                        cardNumber: cardNumber,
+                        cvv: cvv,
+                        ownerName: ownerName,
+                        uid: auth.uid,
                     })
-                    .end();
-            const nCard = new Card({
-                cardNumber: cardNumber,
-                cvv: cvv,
-                ownerName: ownerName,
-                uid: auth.uid,
-            })
-            const rCard = await nCard.save();
-            return res.send(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: rCard,
-                })
-                .end();
+                    const error = await nCard.validateSync();
+                    if (error !== null) {
+                        res.status(HttpStatusCode.BAD_REQUEST).send({
+                            error: true,
+                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                            data: error,
+                        });
+                    } else {
+                        const rCard = await nCard.save();
+                        const responseCard: { _id: string } & ICard = {
+                            cardNumber: rCard.cardNumber.substring(0, 3),
+                            ownerName: rCard.ownerName,
+                            _id: rCard._id.toString(),
+                        }
+                        res.status(HttpStatusCode.OK).send({
+                            error: false,
+                            data: responseCard,
+                        });
+                    }
+                }
+            }
         });
     }
 
@@ -64,98 +82,112 @@ class CardController extends IController {
             cvv,
             ownerName,
         } = await req.body;
-        return await Token.verify(req, res, async (req, res, auth) => {
-            if (cardNumber === undefined)
-                return res.send(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        code: CodeResponse.BODY_PROPERTY_EMPTY
-                    })
-                    .end();
-            const oCard = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
-            if (oCard === null)
-                return res.status(HttpStatusCode.OK)
-                    .send({
+        await Token.verify(req, res, async (req, res, auth) => {
+            if (!cardNumber) {
+                res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.BODY_PROPERTY_EMPTY
+                });
+            } else {
+                const oCard = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
+                if (!oCard) {
+                    res.status(HttpStatusCode.OK).send({
                         error: true,
                         code: CodeResponse.CARD_NOT_FOUND
-                    })
-                    .end();
-            oCard.cardNumber = cardNumber ?? oCard.cardNumber;
-            oCard.cvv = cvv ?? oCard.cvv;
-            oCard.ownerName = ownerName ?? oCard.ownerName;
-            const rCard = await oCard.save();
-            return res.send(HttpStatusCode.OK)
-                .send({
-                    error: false,
-                    data: rCard,
-                })
-                .end();
+                    });
+                } else {
+                    oCard.cardNumber = cardNumber ?? oCard.cardNumber;
+                    oCard.cvv = cvv ?? oCard.cvv;
+                    oCard.ownerName = ownerName ?? oCard.ownerName;
+                    const error = await oCard.validateSync();
+                    if (error !== null) {
+                        res.status(HttpStatusCode.BAD_REQUEST).send({
+                            error: true,
+                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                            data: error,
+                        });
+                    } else {
+                        const rCard = await oCard.save();
+                        const responseCard: { _id: string } & ICard = {
+                            cardNumber: rCard.cardNumber.substring(0, 3),
+                            ownerName: rCard.ownerName,
+                            _id: rCard._id.toJSON(),
+                        }
+                        res.status(HttpStatusCode.OK).send({
+                            error: false,
+                            data: responseCard,
+                        });
+                    }
+                }
+            }
         });
     }
 
     public async destroy(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
-        if (!ObjectId.isValid(cid))
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                })
-                .end();
-        return await Token.verify(req, res, async (req, res, auth) => {
-            const card = await Card.findOne({
-                uid: auth.uid,
-                _id: cid,
+        if (!ObjectId.isValid(cid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
             });
-            if (card === null)
-                return await res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const card = await Card.findOne({
+                    uid: auth.uid,
+                    _id: cid,
+                });
+                if (!card) {
+                    await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.CARD_NOT_FOUND,
-                    })
-                    .end();
-            else {
-                const oldCard = await card.delete();
-                return await res.status(HttpStatusCode.OK)
-                    .send({
+                    });
+                } else {
+                    const oldCard = await card.delete();
+                    const responseCard: { _id: string } & ICard = {
+                        cardNumber: oldCard.cardNumber.substring(0, 3),
+                        ownerName: oldCard.ownerName,
+                        _id: oldCard._id.toString(),
+                    }
+                    await res.status(HttpStatusCode.OK).send({
                         error: false,
-                        data: oldCard,
-                    })
-                    .end();
-            }
-        });
+                        data: responseCard,
+                    });
+                }
+            });
+        }
     }
 
     public async show(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
-        if (!ObjectId.isValid(cid))
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
-                })
-                .end();
-        return await Token.verify(req, res, async (req, res, auth) => {
-            const card = await Card.findOne({
-                uid: auth.uid,
-                _id: cid,
+        if (!ObjectId.isValid(cid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
             });
-            if (card === null)
-                return await res.status(HttpStatusCode.NOT_FOUND)
-                    .send({
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const card = await Card.findOne({
+                    uid: auth.uid,
+                    _id: cid,
+                });
+                if (!card) {
+                    await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.CARD_NOT_FOUND,
-                    })
-                    .end();
-            else {
-                return await res.status(HttpStatusCode.OK)
-                    .send({
+                    });
+                } else {
+                    const responseCard: { _id: string } & ICard = {
+                        cardNumber: card.cardNumber.substring(0, 3),
+                        ownerName: card.ownerName,
+                        _id: card._id.toString(),
+                    }
+                    await res.status(HttpStatusCode.OK).send({
                         error: false,
-                        data: card,
-                    })
-                    .end();
-            }
-        });
+                        data: responseCard,
+                    });
+                }
+            });
+        }
     }
 }
 

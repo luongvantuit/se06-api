@@ -8,80 +8,76 @@ import Token from "../perform/Token";
 
 class UserController extends IController {
     public async index(req: IRequest, res: IResponse) {
-        return await Token.verify(req, res, async (req, res, auth) => {
+        await Token.verify(req, res, async (req, res, auth) => {
             const user = await User.findOne({ uid: auth.uid })
-            if (user === null)
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        code: CodeResponse.USER_INFORMATION_EMPTY,
-                    }).end();
-            return await res.status(HttpStatusCode.OK)
-                .send({
+            if (!user) {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.USER_INFORMATION_EMPTY,
+                });
+            } else {
+                await res.status(HttpStatusCode.OK).send({
                     error: false,
                     data: user,
-                }).end();
+                });
+            }
         });
     }
 
     public async show(req: IRequest, res: IResponse) {
-        const { uid } = req.params;
-
-        if (uid === undefined)
-            return await res.status(HttpStatusCode.BAD_REQUEST)
-                .send({
-                    error: true,
-                    code: CodeResponse.PARAM_EMPTY,
-                })
-                .end();
-
-        const user = await User.findOne({
-            uid: uid
-        })
-        if (user !== null) {
-            const resUser: IUser = {
-                uid: uid,
-                displayName: user.displayName,
-                address: user.address,
-                displayPhoto: user.displayPhoto ?? `https://gravatar.com/avatar/${uid}?s=400&d=identicon`,
-                displayPhotoCover: user.displayPhotoCover,
-                bio: user.bio,
-                birthday: user.birthday,
-                email: user.email,
-            }
-            return await res.status(HttpStatusCode.OK)
-                .send({
+        const { uid } = await req.params;
+        if (!uid) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_EMPTY,
+            });
+        } else {
+            const user = await User.findOne({
+                uid: uid
+            })
+            if (user) {
+                const resUser: { _id: string } & IUser = {
+                    _id: user._id.toString(),
+                    uid: uid,
+                    displayName: user.displayName,
+                    address: user.address,
+                    displayPhoto: user.displayPhoto ?? `https://gravatar.com/avatar/${uid}?s=400&d=identicon`,
+                    displayPhotoCover: user.displayPhotoCover,
+                    bio: user.bio,
+                    birthday: user.birthday,
+                    email: user.email,
+                }
+                await res.status(HttpStatusCode.OK).send({
                     error: false,
                     data: resUser,
-                }).end();
+                });
+            } else {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.USER_INFORMATION_EMPTY,
+                });
+            }
         }
-        return await res.status(HttpStatusCode.BAD_REQUEST)
-            .send({
-                error: true,
-                code: CodeResponse.USER_INFORMATION_EMPTY,
-            }).end();
     }
 
 
     public async create(req: IRequest, res: IResponse) {
         return await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
-            if (oldUser !== null)
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        code: CodeResponse.METHOD_REQUEST_WRONG,
-                    })
-                    .end();
-            const {
-                address,
-                displayName,
-                displayPhoto,
-                displayPhotoCover,
-                birthday,
-                bio,
-            } = req.body;
-            try {
+            if (oldUser) {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.METHOD_REQUEST_WRONG,
+                });
+            } else {
+                const {
+                    address,
+                    displayName,
+                    displayPhoto,
+                    displayPhotoCover,
+                    birthday,
+                    bio,
+                } = await req.body;
                 const newUser = new User({
                     uid: auth.uid,
                     address: address,
@@ -91,43 +87,42 @@ class UserController extends IController {
                     birthday: birthday,
                     bio: bio,
                     email: auth.email,
-                })
-                const resBody = await newUser.save();
-                return await res.status(HttpStatusCode.OK)
-                    .send({
+                });
+                const error = await newUser.validateSync();
+                if (error === null) {
+                    const resBody = await newUser.save();
+                    await res.status(HttpStatusCode.OK).send({
                         error: false,
                         data: resBody,
-                    }).end();
-            } catch (error: any) {
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
+                    });
+                } else {
+                    await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
                         code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
-                    }).end();
+                        data: error
+                    });
+                }
             }
         });
     }
 
-
     public async update(req: IRequest, res: IResponse) {
-        return await Token.verify(req, res, async (req, res, auth) => {
+        await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
-            if (oldUser === null)
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
-                        error: true,
-                        code: CodeResponse.USER_INFORMATION_EMPTY,
-                    })
-                    .end();
-            const {
-                address,
-                displayName,
-                displayPhoto,
-                displayPhotoCover,
-                birthday,
-                bio,
-            } = req.body;
-            try {
+            if (!oldUser) {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.USER_INFORMATION_EMPTY,
+                });
+            } else {
+                const {
+                    address,
+                    displayName,
+                    displayPhoto,
+                    displayPhotoCover,
+                    birthday,
+                    bio,
+                } = await req.body;
                 oldUser.address = address ?? oldUser.address;
                 oldUser.displayPhoto = displayPhoto ?? `https://gravatar.com/avatar/${auth.uid}?s=400&d=identicon`;
                 oldUser.displayName = displayName ?? oldUser.displayName;
@@ -135,18 +130,20 @@ class UserController extends IController {
                 oldUser.displayPhotoCover = displayPhotoCover ?? oldUser.displayPhotoCover;
                 oldUser.bio = bio ?? oldUser.bio;
                 oldUser.email = auth.email;
-                const newUser = await oldUser.save();
-                return await res.status(HttpStatusCode.OK)
-                    .send({
-                        error: false,
-                        data: newUser,
-                    }).end();
-            } catch (error: any) {
-                return await res.status(HttpStatusCode.BAD_REQUEST)
-                    .send({
+                const error = await oldUser.validateSync();
+                if (error) {
+                    await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
                         code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
-                    }).end();
+                        data: error
+                    });
+                } else {
+                    const newUser = await oldUser.save();
+                    await res.status(HttpStatusCode.OK).send({
+                        error: false,
+                        data: newUser,
+                    });
+                }
             }
         })
     }
