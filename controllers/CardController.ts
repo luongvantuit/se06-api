@@ -40,7 +40,7 @@ class CardController extends IController {
                 });
             } else {
                 const card = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
-                if (card !== null) {
+                if (!card) {
                     res.status(HttpStatusCode.OK).send({
                         error: true,
                         code: CodeResponse.METHOD_REQUEST_WRONG
@@ -90,7 +90,7 @@ class CardController extends IController {
                 });
             } else {
                 const oCard = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
-                if (oCard === null) {
+                if (!oCard) {
                     res.status(HttpStatusCode.OK).send({
                         error: true,
                         code: CodeResponse.CARD_NOT_FOUND
@@ -136,7 +136,7 @@ class CardController extends IController {
                     uid: auth.uid,
                     _id: cid,
                 });
-                if (card === null) {
+                if (!card) {
                     await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.CARD_NOT_FOUND,
@@ -170,7 +170,7 @@ class CardController extends IController {
                     uid: auth.uid,
                     _id: cid,
                 });
-                if (card === null) {
+                if (!card) {
                     await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
                         code: CodeResponse.CARD_NOT_FOUND,

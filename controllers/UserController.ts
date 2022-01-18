@@ -10,7 +10,7 @@ class UserController extends IController {
     public async index(req: IRequest, res: IResponse) {
         await Token.verify(req, res, async (req, res, auth) => {
             const user = await User.findOne({ uid: auth.uid })
-            if (user === null) {
+            if (!user) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
                     code: CodeResponse.USER_INFORMATION_EMPTY,
@@ -35,7 +35,7 @@ class UserController extends IController {
             const user = await User.findOne({
                 uid: uid
             })
-            if (user !== null) {
+            if (user) {
                 const resUser: { _id: string } & IUser = {
                     _id: user._id.toString(),
                     uid: uid,
@@ -64,7 +64,7 @@ class UserController extends IController {
     public async create(req: IRequest, res: IResponse) {
         return await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
-            if (oldUser !== null) {
+            if (oldUser) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
                     code: CodeResponse.METHOD_REQUEST_WRONG,
@@ -106,11 +106,10 @@ class UserController extends IController {
         });
     }
 
-
     public async update(req: IRequest, res: IResponse) {
         await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
-            if (oldUser === null) {
+            if (!oldUser) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
                     code: CodeResponse.USER_INFORMATION_EMPTY,
@@ -132,7 +131,7 @@ class UserController extends IController {
                 oldUser.bio = bio ?? oldUser.bio;
                 oldUser.email = auth.email;
                 const error = await oldUser.validateSync();
-                if (error !== null) {
+                if (error) {
                     await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
                         code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
