@@ -13,7 +13,7 @@ API.post('/user', json(), UserController.create);
 API.put('/user', json(), UserController.update);
 
 // All api shop
-API.get('/shops', ShopController.index);
+API.get('/shops/:uid', ShopController.index);
 API.get('/shop/:sid', ShopController.show);
 API.post('/shop', json(), ShopController.create);
 API.put('/shop/:sid', json(), ShopController.update);

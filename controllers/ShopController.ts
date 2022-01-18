@@ -9,12 +9,20 @@ import CodeResponse from "../perform/CodeResponse";
 
 class ShopController extends IController {
     public async index(req: IRequest, res: IResponse) {
-        await Token.verify(req, res, async (req, res, auth) => {
-            const shops = await Shop.find({ uid: auth.uid });
-            res.status(HttpStatusCode.OK).send({
-                error: false,
-                data: shops,
-            });
+        const { uid } = await req.params;
+        const { limit, page } = await req.query;
+        const mLimit: number = Number(limit ?? 10);
+        const mPage: number = Number(page ?? 0);
+        const shops = await Shop.find({ uid: uid });
+        const maxPage = Math.ceil(shops.length / mLimit);
+        const responseShops: Array<any> = []
+        for (let index: number = mLimit * mPage; index < shops.length; index++) {
+            responseShops.push(shops[index])
+        }
+        res.status(HttpStatusCode.OK).send({
+            error: false,
+            data: responseShops,
+            maxPage: maxPage,
         });
     }
 
