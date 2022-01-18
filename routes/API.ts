@@ -1,15 +1,11 @@
 import { Router, json } from "express";
 import CardController from "../controllers/CardController";
-import CheckEmailRecordController from "../controllers/CheckEmailRecordController";
 import ProductController from "../controllers/ProductController";
 import ShopController from "../controllers/ShopController";
 import UploadFileController from "../controllers/UploadFileController";
 import UploadMultiFilesController from "../controllers/UploadMultiFilesController";
 import UserController from "../controllers/UserController";
 const API: Router = Router();
-
-API.post('/check/email/record', json(), CheckEmailRecordController.index)
-
 // All api information user
 API.get('/user', UserController.index);
 API.get('/user/:uid', UserController.show);
