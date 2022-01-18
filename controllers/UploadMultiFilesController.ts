@@ -16,20 +16,16 @@ class UploadMultiFilesController extends IController {
         await Token.verify(req, res, (req, res) => {
             uploadMultiFiles(req, res, (error) => {
                 if (error) {
-                    res
-                        .status(HttpStatusCode.OK)
-                        .send({
-                            error: true,
-                            code: CodeResponse.UPLOAD_ERROR
-                        });
+                    res.status(HttpStatusCode.OK).send({
+                        error: true,
+                        code: CodeResponse.UPLOAD_ERROR
+                    });
                 }
                 else {
-                    res
-                        .status(HttpStatusCode.OK)
-                        .send({
-                            error: false,
-                            data: req.files
-                        });
+                    res.status(HttpStatusCode.OK).send({
+                        error: false,
+                        data: req.files
+                    });
                 }
             });
         });
