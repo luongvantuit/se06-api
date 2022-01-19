@@ -1,5 +1,6 @@
 import { Router, json } from "express";
 import CardController from "../controllers/CardController";
+import CartController from "../controllers/CartController";
 import ProductController from "../controllers/ProductController";
 import ShopController from "../controllers/ShopController";
 import UploadFileController from "../controllers/UploadFileController";
@@ -33,6 +34,10 @@ API.get('/product/:pid', ProductController.show);
 API.post('/product/:sid', json(), ProductController.create);
 API.put('/product/:sid/:pid', json(), ProductController.update);
 API.delete('/product/:sid/:pid', json(), ProductController.destroy);
+
+
+// API cart manager
+API.delete('/cart/:cid', CartController.destroy);
 
 
 // API upload file
