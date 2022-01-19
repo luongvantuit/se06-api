@@ -43,6 +43,13 @@ class CartController extends IController {
         }
     }
 
+    public create(req: IRequest, res: IResponse) {
+
+    }
+
+    public update(req: IRequest, res: IResponse) {
+
+    }
 
     public async destroy(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
