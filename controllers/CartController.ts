@@ -8,8 +8,14 @@ import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 
 class CartController extends IController {
-    public index(req: IRequest, res: IResponse) {
-
+    public async index(req: IRequest, res: IResponse) {
+        await Token.verify(req, res, async (req, res, auth) => {
+            const carts = await Cart.findOne({ uid: auth.uid });
+            await res.status(HttpStatusCode.OK).send({
+                error: false,
+                data: carts,
+            });
+        })
     }
 
 

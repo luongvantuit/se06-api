@@ -14,7 +14,7 @@ interface CartModel extends ICart, Document {
 const CartSchema = new Schema({
     uid: { type: String, required: true },
     pid: { type: String, required: true },
-    quantily: { type: Number, required: true },
+    quantily: { type: Number, required: true, min: 0 },
     classify: { type: Number }
 });
 
