@@ -39,6 +39,7 @@ API.delete('/product/:sid/:pid', json(), ProductController.destroy);
 // API cart manager
 API.delete('/cart/:cid', CartController.destroy);
 API.get('/cart', CartController.index);
+API.get('/cart/:cid', CartController.show);
 
 // API upload file
 API.post('/upload', UploadFileController.create);
