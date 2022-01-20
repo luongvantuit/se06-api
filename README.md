@@ -1,32 +1,103 @@
-# __API e-commerce__
+# __Base API eCommerce__
 
-__Base API for e-commerce application__
+## __Setup environment local__
 
-* __Environment__
+__Step 1:__ Install NodeJS by requirement NodeJS,NPM or Yarn check version node
 
-    * __Node JS__
+```
+node -v
+```
 
-        <p align="center"><img src="https://github.com/nodejs/nodejs.dev/raw/main/src/images/logos/nodejs-logo-light-mode.svg" height="120px"/>
-        </p>
+if NodeJS not existed, then
 
-* __Database__
+- __Windows__
 
-    * __MongoDB__
+Open browser, [NodeJS](https://nodejs.org/en/download/)
 
-        <p align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png"alt="Docker Image" height="120px"/>
-        </p>
+or use chocolatey
 
-* __Tool__
+```
+choco install nodejs
+```
 
-    * __Docker__
+- __Linux & GNU__
 
-        <p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/Moby-logo.png"alt="Docker Image" height="120px"/>
-        </p>
-    
-    * __Firebase__
+```
+sudo apt install node
+```
 
-        <p align="center"><img src="https://cdn.iconscout.com/icon/free/png-256/firebase-1-282796.png"alt="Docker Image" height="120px"/>
-        </p>
+- __MacOS__
 
+The first install NodeJS from [NodeJS](https://nodejs.org/en/download/) or install [Brew](https://brew.sh/)
 
-__`@github pages`__ 
+```
+brew install node
+```
+
+__NPM__
+
+```
+npm -v
+```
+
+__Yarn__
+
+```
+yarn -v
+```
+
+If yarn not found, then install yarn with command
+
+```
+npm install -g yarn
+```
+
+__Step 2:__ Install library 
+
+Install with NPM 
+
+```
+npm install
+``` 
+
+Install with Yarn (Recommened)
+
+```
+yarn install
+```
+
+__Step 3:__ Run project
+
+Requirement MongoDB run on port 27017
+
+Project run on port 8080 (default) [localhost](http://localhost:8080)
+
+- __NPM__
+
+```
+npm start
+```
+
+- __Yarn__
+
+```
+yarn start
+```
+
+## __Setup environment local__
+
+__Step 1__ Setup Docker
+
+Download and install Docker from [How to setup Docker](https://docs.docker.com/get-docker/)
+
+__Step 2__ 
+
+Setup Docker Compose [How to setup Docker Compose](https://docs.docker.com/compose/install/)
+
+__Step 3__
+
+Run command start 
+
+```
+docker-compose up -d --build
+```

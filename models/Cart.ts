@@ -1,7 +1,10 @@
 import { Document, model, Schema, Model } from 'mongoose';
 
 interface ICart {
-
+    pid: string;
+    uid: string;
+    quantily: number;
+    classify?: number;
 }
 
 interface CartModel extends ICart, Document {
@@ -9,7 +12,10 @@ interface CartModel extends ICart, Document {
 }
 
 const CartSchema = new Schema({
-
+    uid: { type: String, required: true },
+    pid: { type: String, required: true },
+    quantily: { type: Number, required: true, min: 0 },
+    classify: { type: Number }
 });
 
 const Cart: Model<CartModel> = model<CartModel>('cart', CartSchema);

@@ -129,39 +129,56 @@ class ProductController extends IController {
                 code: CodeResponse.PARAM_WRONG_FORMAT,
             });
         } else {
-            await Token.verify(req, res, async (req, res, auth) => {
-                const shop = await Shop.findById(sid);
-                if (!shop || shop.uid !== auth.uid) {
-                    await res.status(HttpStatusCode.NOT_FOUND).send({
-                        error: true,
-                        code: CodeResponse.SHOP_NOT_FOUND,
-                    });
-                } else {
-                    const product = new Product({
-                        sid: sid,
-                        description: description,
-                        displayName: displayName,
-                        photos: photos,
-                        address: address,
-                        classifies: classifies,
-                        categories: categories,
-                    })
-                    const error = await product.validateSync();
-                    if (!error) {
-                        const newProduct = await product.save();
-                        await res.status(HttpStatusCode.OK).send({
-                            error: false,
-                            data: newProduct,
+            if (classifies && Array.isArray(classifies) && classifies.length > 0) {
+                await Token.verify(req, res, async (req, res, auth) => {
+                    const shop = await Shop.findById(sid);
+                    if (!shop || shop.uid !== auth.uid) {
+                        await res.status(HttpStatusCode.NOT_FOUND).send({
+                            error: true,
+                            code: CodeResponse.SHOP_NOT_FOUND,
                         });
                     } else {
-                        await res.status(HttpStatusCode.BAD_REQUEST).send({
-                            error: true,
-                            data: error,
-                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
-                        });
+                        const product = new Product({
+                            sid: sid,
+                            description: description,
+                            displayName: displayName,
+                            photos: photos,
+                            address: address,
+                            classifies: classifies,
+                            categories: categories,
+                            date: Date.now(),
+                        })
+                        const error = await product.validateSync();
+                        if (!error) {
+                            var quantily = 0;
+                            for (let index = 0; index < product.classifies.length; index++) {
+                                quantily += product.classifies[index].quantily;
+                            }
+                            if (quantily > 0) {
+                                product.state = 'in-stock';
+                            } else {
+                                product.state = 'out-of-stock';
+                            }
+                            const newProduct = await product.save();
+                            await res.status(HttpStatusCode.OK).send({
+                                error: false,
+                                data: newProduct,
+                            });
+                        } else {
+                            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                                error: true,
+                                data: error,
+                                code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
+                            });
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    error: true,
+                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
+                });
+            }
         }
     }
 
@@ -199,7 +216,7 @@ class ProductController extends IController {
         }
     }
 
-    public async edit(req: IRequest, res: IResponse) {
+    public async update(req: IRequest, res: IResponse) {
         const { sid, pid } = await req.params;
         const {
             description,
@@ -208,6 +225,7 @@ class ProductController extends IController {
             address,
             classifies,
             categories,
+            state,
         } = await req.body;
 
         if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
@@ -235,10 +253,20 @@ class ProductController extends IController {
                         product.displayName = displayName ?? product.displayName;
                         product.photos = photos ?? product.photos;
                         product.address = address ?? product.address;
-                        product.classifies = classifies ?? product.classifies;
+                        product.classifies = (classifies && Array.isArray(classifies) && classifies.length > 0) ? classifies : product.classifies;
                         product.categories = categories ?? product.categories;
+                        product.state = state ?? product.state;
                         const error = await product.validateSync();
                         if (!error) {
+                            var quantily = 0;
+                            for (let index = 0; index < product.classifies.length; index++) {
+                                quantily += product.classifies[index].quantily;
+                            }
+                            if (quantily > 0) {
+                                product.state = 'in-stock';
+                            } else {
+                                product.state = 'out-of-stock';
+                            }
                             const newProduct = await product.save();
                             await res.status(HttpStatusCode.OK).send({
                                 error: false,
