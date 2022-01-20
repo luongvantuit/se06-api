@@ -4,7 +4,6 @@ import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
 import Product from "../models/Product";
 import Shop from "../models/Shop";
-import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 
@@ -126,7 +125,6 @@ class ProductController extends IController {
         if (!ObjectId.isValid(sid)) {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
                 error: true,
-                code: CodeResponse.PARAM_WRONG_FORMAT,
             });
         } else {
             if (classifies && Array.isArray(classifies) && classifies.length > 0) {
@@ -135,7 +133,6 @@ class ProductController extends IController {
                     if (!shop || shop.uid !== auth.uid) {
                         await res.status(HttpStatusCode.NOT_FOUND).send({
                             error: true,
-                            code: CodeResponse.SHOP_NOT_FOUND,
                         });
                     } else {
                         const product = new Product({
@@ -168,7 +165,6 @@ class ProductController extends IController {
                             await res.status(HttpStatusCode.BAD_REQUEST).send({
                                 error: true,
                                 data: error,
-                                code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
                             });
                         }
                     }
@@ -176,7 +172,6 @@ class ProductController extends IController {
             } else {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
-                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
                 });
             }
         }
@@ -187,7 +182,6 @@ class ProductController extends IController {
         if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
                 error: true,
-                code: CodeResponse.PARAM_WRONG_FORMAT,
             });
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
@@ -195,14 +189,12 @@ class ProductController extends IController {
                 if (!shop || shop.uid !== auth.uid) {
                     await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
-                        code: CodeResponse.SHOP_NOT_FOUND,
                     });
                 } else {
                     const product = await Product.findById(pid);
                     if (!product) {
                         await res.status(HttpStatusCode.NOT_FOUND).send({
                             error: true,
-                            code: CodeResponse.PRODUCT_NOT_FOUND,
                         });
                     } else {
                         const oldProduct = await product.delete();
@@ -231,7 +223,6 @@ class ProductController extends IController {
         if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
                 error: true,
-                code: CodeResponse.PARAM_WRONG_FORMAT,
             });
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
@@ -239,14 +230,12 @@ class ProductController extends IController {
                 if (!shop || shop.uid !== auth.uid) {
                     await res.status(HttpStatusCode.NOT_FOUND).send({
                         error: true,
-                        code: CodeResponse.SHOP_NOT_FOUND,
                     });
                 } else {
                     const product = await Product.findById(pid);
                     if (!product) {
                         await res.status(HttpStatusCode.NOT_FOUND).send({
                             error: true,
-                            code: CodeResponse.PRODUCT_NOT_FOUND,
                         });
                     } else {
                         product.description = description ?? product.description;
@@ -276,7 +265,6 @@ class ProductController extends IController {
                             await res.status(HttpStatusCode.OK).send({
                                 error: false,
                                 data: error,
-                                code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT
                             });
                         }
                     }
@@ -290,14 +278,12 @@ class ProductController extends IController {
         if (!ObjectId.isValid(pid)) {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
                 error: true,
-                code: CodeResponse.PARAM_WRONG_FORMAT,
             });
         } else {
             const product = await Product.findById(pid);
             if (!product) {
                 await res.status(HttpStatusCode.NOT_FOUND).send({
                     error: true,
-                    code: CodeResponse.PRODUCT_NOT_FOUND,
                 });
             } else {
                 await res.status(HttpStatusCode.OK).send({

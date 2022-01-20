@@ -5,7 +5,6 @@ import Token from "../perform/Token";
 import Shop from '../models/Shop';
 import HttpStatusCode from "../perform/HttpStatusCode";
 import { ObjectId } from "mongodb";
-import CodeResponse from "../perform/CodeResponse";
 
 class ShopController extends IController {
     public async index(req: IRequest, res: IResponse) {
@@ -30,7 +29,6 @@ class ShopController extends IController {
         const { sid } = await req.params;
         if (!ObjectId.isValid(sid)) {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
-                code: CodeResponse.PARAM_WRONG_FORMAT,
                 error: true,
             });
         } else {
@@ -38,7 +36,6 @@ class ShopController extends IController {
             if (!shop) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
-                    code: CodeResponse.SHOP_NOT_FOUND,
                 });
             } else {
                 const resBody: any = {
@@ -83,7 +80,6 @@ class ShopController extends IController {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
                     data: error,
-                    code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                 });
             }
         })
@@ -100,7 +96,6 @@ class ShopController extends IController {
         await Token.verify(req, res, async (req, res, auth) => {
             if (!ObjectId.isValid(sid)) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
-                    code: CodeResponse.PARAM_WRONG_FORMAT,
                     error: true,
                 });
             } else {
@@ -108,7 +103,6 @@ class ShopController extends IController {
                 if (!oldShop || oldShop.uid !== auth.uid) {
                     await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
-                        code: CodeResponse.SHOP_NOT_FOUND,
                     });
                 } else {
                     oldShop.description = description ?? oldShop.description;
@@ -126,7 +120,6 @@ class ShopController extends IController {
                         await res.status(HttpStatusCode.BAD_REQUEST).send({
                             error: true,
                             data: error,
-                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                         });
                     }
                 }
@@ -138,7 +131,6 @@ class ShopController extends IController {
         const { sid } = await req.params;
         if (!ObjectId.isValid(sid)) {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
-                code: CodeResponse.PARAM_WRONG_FORMAT,
                 error: true,
             });
         } else {
@@ -147,7 +139,6 @@ class ShopController extends IController {
                 if (!shop || shop.uid !== auth.uid) {
                     await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
-                        code: CodeResponse.SHOP_NOT_FOUND,
                     });
                 } else {
                     const oldShop = await shop.delete();

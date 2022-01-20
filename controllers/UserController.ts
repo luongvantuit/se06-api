@@ -2,7 +2,6 @@ import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
 import User, { IUser } from "../models/User";
-import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 
@@ -13,7 +12,6 @@ class UserController extends IController {
             if (!user) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
-                    code: CodeResponse.USER_INFORMATION_EMPTY,
                 });
             } else {
                 await res.status(HttpStatusCode.OK).send({
@@ -48,7 +46,6 @@ class UserController extends IController {
         } else {
             await res.status(HttpStatusCode.BAD_REQUEST).send({
                 error: true,
-                code: CodeResponse.USER_INFORMATION_EMPTY,
             });
         }
     }
@@ -60,7 +57,6 @@ class UserController extends IController {
             if (oldUser) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
-                    code: CodeResponse.METHOD_REQUEST_WRONG,
                 });
             } else {
                 const {
@@ -91,7 +87,6 @@ class UserController extends IController {
                 } else {
                     await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
-                        code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                         data: error
                     });
                 }
@@ -105,7 +100,6 @@ class UserController extends IController {
             if (!oldUser) {
                 await res.status(HttpStatusCode.BAD_REQUEST).send({
                     error: true,
-                    code: CodeResponse.USER_INFORMATION_EMPTY,
                 });
             } else {
                 const {
@@ -127,7 +121,6 @@ class UserController extends IController {
                 if (error) {
                     await res.status(HttpStatusCode.BAD_REQUEST).send({
                         error: true,
-                        code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                         data: error
                     });
                 } else {

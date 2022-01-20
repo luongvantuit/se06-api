@@ -1,7 +1,6 @@
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
-import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 import { uploadMultiFiles } from "../services/Multer";
@@ -18,7 +17,6 @@ class UploadMultiFilesController extends IController {
                 if (error) {
                     res.status(HttpStatusCode.OK).send({
                         error: true,
-                        code: CodeResponse.UPLOAD_ERROR
                     });
                 }
                 else {
