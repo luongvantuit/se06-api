@@ -234,8 +234,9 @@ class CartController extends IController {
         }
     }
 
+
     /**
-     * 
+     * Cannot verify classify of product
      * @param req 
      * @param res 
      */
@@ -255,13 +256,95 @@ class CartController extends IController {
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+        } else if (!quantily || !classify) {
+            const response: any = {
+                error: true,
+                msg: `body property is empty`,
+                path: req.path,
+                status: HttpStatusCode.BAD_REQUEST,
+                method: req.method,
+                data: {
+                    quantily: quantily,
+                    classify: classify
+                },
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+        } else if (typeof quantily !== 'number' || typeof classify !== 'number') {
+            const response: any = {
+                error: true,
+                msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
+                path: req.path,
+                status: HttpStatusCode.BAD_REQUEST,
+                method: req.method,
+                data: {
+                    quantily: quantily,
+                    classify: classify
+                },
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
-                const cart = await Cart.findOne({ _id: cid });
+                const cart = await Cart.findOne({ _id: cid, classify: classify });
                 if (!cart || cart.uid !== auth.uid) {
-
+                    const response: any = {
+                        error: true,
+                        msg: `not found information product in cart with cid: ${cid}`,
+                        path: req.path,
+                        status: HttpStatusCode.NOT_FOUND,
+                        method: req.method,
+                        data: {
+                            cid: cid,
+                        },
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
+                    const product = await Product.findOne({ _id: cart.pid });
+                    if (!product) {
+                        const oldCart = await cart.delete();
+                        const response: any = {
+                            error: true,
+                            msg: `not found information product, product was removed your cart`,
+                            path: req.path,
+                            status: HttpStatusCode.BAD_REQUEST,
+                            method: req.method,
+                            data: oldCart,
+                        };
+                        Log.default(response);
+                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                    } else {
+                        if (classify > product.classifies.length) {
+                            const response: any = {
+                                error: true,
+                                msg: `not found classfiy of product with pid: ${cart.pid}`,
+                                status: HttpStatusCode.BAD_REQUEST,
+                                path: req.path,
+                                method: req.method,
+                                data: {
+                                    classify: classify
+                                }
+                            };
+                            Log.default(response);
+                            await res.status(HttpStatusCode.NOT_FOUND).send(response);
+                        } else if (quantily > product.classifies[classify].quantily && product.classifies[classify].quantily >= cart.quantily) {
+                            const response: any = {
+                                error: true,
+                                msg: `product quantity is not enough`,
+                                status: HttpStatusCode.BAD_REQUEST,
+                                path: req.path,
+                                method: req.method,
+                                data: {
+                                    classify: classify
+                                }
+                            };
+                            Log.default(response);
+                            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                        } else if (cart.quantily > product.classifies[classify].quantily) {
 
+                        }
+                    }
                 }
             });
         }
