@@ -1,4 +1,4 @@
-import { Code, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
@@ -43,8 +43,19 @@ class CartController extends IController {
         }
     }
 
-    public create(req: IRequest, res: IResponse) {
-
+    public async create(req: IRequest, res: IResponse) {
+        const { pid } = await req.params;
+        if (!ObjectId.isValid(pid)) {
+            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                error: true,
+                code: CodeResponse.PARAM_WRONG_FORMAT,
+            });
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const { quantily, classify } = await req.body;
+                const productInCart = await Cart.findOne({})
+            });
+        }
     }
 
     public update(req: IRequest, res: IResponse) {

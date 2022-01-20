@@ -146,9 +146,19 @@ class ProductController extends IController {
                             address: address,
                             classifies: classifies,
                             categories: categories,
+                            date: Date.now(),
                         })
                         const error = await product.validateSync();
                         if (!error) {
+                            var quantily = 0;
+                            for (let index = 0; index < product.classifies.length; index++) {
+                                quantily += product.classifies[index].quantily;
+                            }
+                            if (quantily > 0) {
+                                product.state = 'in-stock';
+                            } else {
+                                product.state = 'out-of-stock';
+                            }
                             const newProduct = await product.save();
                             await res.status(HttpStatusCode.OK).send({
                                 error: false,
@@ -215,6 +225,7 @@ class ProductController extends IController {
             address,
             classifies,
             categories,
+            state,
         } = await req.body;
 
         if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
@@ -244,8 +255,18 @@ class ProductController extends IController {
                         product.address = address ?? product.address;
                         product.classifies = (classifies && Array.isArray(classifies) && classifies.length > 0) ? classifies : product.classifies;
                         product.categories = categories ?? product.categories;
+                        product.state = state ?? product.state;
                         const error = await product.validateSync();
                         if (!error) {
+                            var quantily = 0;
+                            for (let index = 0; index < product.classifies.length; index++) {
+                                quantily += product.classifies[index].quantily;
+                            }
+                            if (quantily > 0) {
+                                product.state = 'in-stock';
+                            } else {
+                                product.state = 'out-of-stock';
+                            }
                             const newProduct = await product.save();
                             await res.status(HttpStatusCode.OK).send({
                                 error: false,
