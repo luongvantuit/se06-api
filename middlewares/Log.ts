@@ -1,7 +1,15 @@
 class Log {
-    public default(message: any): void {
+    public static default(message: any): void {
         console.log(message);
     }
+
+    public static error(message: any): void {
+        console.error(message);
+    }
+    public static warn(message: any): void {
+        console.warn(message);
+    }
+
 }
 
-export default new Log;
+export default Log;

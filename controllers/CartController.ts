@@ -2,44 +2,78 @@ import { ObjectId } from "mongodb";
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
+import Log from "../middlewares/Log";
 import Cart from "../models/Cart";
 import Product from "../models/Product";
-import CodeResponse from "../perform/CodeResponse";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
 
 class CartController extends IController {
+
+    private TAG: string = "CARTCONTROLLER"
+
     public async index(req: IRequest, res: IResponse) {
+        Log.warn(`${this.TAG}: ${Date.toString()}`);
         await Token.verify(req, res, async (req, res, auth) => {
-            const carts = await Cart.findOne({ uid: auth.uid });
-            await res.status(HttpStatusCode.OK).send({
+            const carts = await Cart.find({ uid: auth.uid });
+            const response: any = {
                 error: false,
                 data: carts,
-            });
+                msg: `success! get all information product in cart of user with uid: ${auth.uid}`,
+                status: HttpStatusCode.OK,
+                method: req.method,
+                path: req.path
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.OK).send(response);
         })
     }
 
     public async show(req: IRequest, res: IResponse) {
+        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid)) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-                code: CodeResponse.PARAM_WRONG_FORMAT,
-            });
+                msg: `params wrong format with cid: ${cid}`,
+                data: {
+                    cid: cid,
+                },
+                status: HttpStatusCode.BAD_REQUEST,
+                method: req.method,
+                path: req.path,
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
                 const cart = await Cart.findOne({ _id: cid, uid: auth.uid });
+                var response: any;
                 if (!cart) {
-                    await res.status(HttpStatusCode.NOT_FOUND).send({
+                    response = {
                         error: true,
-                        code: CodeResponse.PRODUCT_NOT_FOUND
-                    });
+                        msg: `not found information product in cart with cid: ${cid}`,
+                        data: {
+                            cid: cid,
+                        },
+                        status: HttpStatusCode.NOT_FOUND,
+                        method: req.method,
+                        path: req.path,
+                    }
+                    await res.status(HttpStatusCode.NOT_FOUND);
                 } else {
-                    await res.status(HttpStatusCode.OK).send({
+                    response = {
                         error: false,
                         data: cart,
-                    });
+                        msg: `success! get information product in cart with cid: ${cid}`,
+                        status: HttpStatusCode.OK,
+                        method: req.method,
+                        path: req.path
+                    }
+                    await res.status(HttpStatusCode.OK);
                 }
+                Log.default(response);
+                await res.send(response);
             });
         }
     }
@@ -51,12 +85,12 @@ class CartController extends IController {
      * @param res 
      */
     public async create(req: IRequest, res: IResponse) {
+        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { pid } = await req.params;
         const { quantily, classify } = await req.body;
         if (!ObjectId.isValid(pid)) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response = {
                 error: true,
-                code: CodeResponse.PARAM_WRONG_FORMAT,
                 msg: `params wrong format with pid: ${pid}`,
                 path: req.path,
                 status: HttpStatusCode.BAD_REQUEST,
@@ -64,11 +98,12 @@ class CartController extends IController {
                 data: {
                     pid: pid,
                 },
-            });
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else if (!quantily || !classify) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-                code: CodeResponse.BODY_PROPERTY_EMPTY,
                 msg: `body property is empty`,
                 path: req.path,
                 status: HttpStatusCode.BAD_REQUEST,
@@ -77,11 +112,12 @@ class CartController extends IController {
                     quantily: quantily,
                     classify: classify
                 },
-            });
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else if (typeof quantily !== 'number' || typeof classify !== 'number') {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response = {
                 error: true,
-                code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                 msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
                 path: req.path,
                 status: HttpStatusCode.BAD_REQUEST,
@@ -90,14 +126,15 @@ class CartController extends IController {
                     quantily: quantily,
                     classify: classify,
                 },
-            });
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
                 const product = await Product.findOne({ _id: pid });
                 if (!product) {
-                    await res.status(HttpStatusCode.NOT_FOUND).send({
+                    const response = {
                         error: true,
-                        code: CodeResponse.PRODUCT_NOT_FOUND,
                         msg: `not found product with pid: ${pid}`,
                         status: HttpStatusCode.NOT_FOUND,
                         path: req.path,
@@ -105,13 +142,14 @@ class CartController extends IController {
                         data: {
                             pid: pid
                         }
-                    });
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
                     const productInCart = await Cart.findOne({ classify: classify, pid: pid });
                     if (productInCart) {
-                        await res.status(HttpStatusCode.BAD_REQUEST).send({
+                        const response: any = {
                             error: true,
-                            code: CodeResponse.METHOD_REQUEST_WRONG,
                             msg: `product can existed in cart, method required is PUT`,
                             path: req.path,
                             status: HttpStatusCode.BAD_REQUEST,
@@ -121,11 +159,12 @@ class CartController extends IController {
                                 classify: classify,
                                 pid: pid,
                             },
-                        });
+                        }
+                        Log.default(response);
+                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                     } else if (classify > product.classifies.length) {
-                        await res.status(HttpStatusCode.NOT_FOUND).send({
+                        const response: any = {
                             error: true,
-                            code: CodeResponse.PRODUCT_NOT_FOUND,
                             msg: `not found product with classfiy`,
                             status: HttpStatusCode.NOT_FOUND,
                             path: req.path,
@@ -134,11 +173,12 @@ class CartController extends IController {
                                 pid: pid,
                                 classify: classify
                             }
-                        });
+                        };
+                        Log.default(response);
+                        await res.status(HttpStatusCode.NOT_FOUND).send(response);
                     } else if (quantily > product.classifies[classify].quantily) {
-                        await res.status(HttpStatusCode.BAD_REQUEST).send({
+                        const response: any = {
                             error: true,
-                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                             msg: `product quantity is not enough`,
                             status: HttpStatusCode.BAD_REQUEST,
                             path: req.path,
@@ -148,19 +188,21 @@ class CartController extends IController {
                                 quantily: quantily,
                                 quantilyCurrency: product.classifies[classify].quantily,
                             }
-                        });
+                        };
+                        Log.default(response);
+                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                     } else {
                         const cart = new Cart({
                             uid: auth.uid,
                             quantily: quantily,
                             classify: classify,
-                            pid: pid
+                            pid: pid,
+                            date: Date.now()
                         })
                         const error = await cart.validateSync();
                         if (!error) {
-                            await res.status(HttpStatusCode.BAD_REQUEST).send({
+                            const response: any = {
                                 error: true,
-                                code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
                                 msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
                                 path: req.path,
                                 status: HttpStatusCode.BAD_REQUEST,
@@ -169,17 +211,22 @@ class CartController extends IController {
                                     quantily: quantily,
                                     classify: classify,
                                 },
-                            });
+                            };
+                            Log.default(response);
+                            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                         } else {
-                            const resCart = await cart.save();
-                            await res.status(HttpStatusCode.OK).send({
+                            await cart.save();
+                            const resCart = await Cart.find({ uid: auth.uid });
+                            const response: any = {
                                 error: true,
                                 msg: `success! add product with pid: ${pid} to cart`,
                                 path: req.path,
                                 status: HttpStatusCode.OK,
                                 method: req.method,
                                 data: resCart,
-                            });
+                            };
+                            Log.default(response);
+                            await res.status(HttpStatusCode.OK).send(response);
                         }
                     }
                 }
@@ -195,6 +242,29 @@ class CartController extends IController {
     public async update(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
         const { quantily, classify } = await req.body;
+        if (!ObjectId.isValid(cid)) {
+            const response: any = {
+                error: true,
+                msg: `params wrong format with cid: ${cid}`,
+                path: req.path,
+                status: HttpStatusCode.BAD_REQUEST,
+                method: req.method,
+                data: {
+                    cid: cid,
+                },
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+        } else {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const cart = await Cart.findOne({ _id: cid });
+                if (!cart || cart.uid !== auth.uid) {
+
+                } else {
+
+                }
+            });
+        }
     }
 
     /**
@@ -203,26 +273,49 @@ class CartController extends IController {
      * @param res 
      */
     public async destroy(req: IRequest, res: IResponse) {
+        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         await Token.verify(req, res, async (req, res, auth) => {
             if (!ObjectId.isValid(cid)) {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                    code: CodeResponse.PARAM_WRONG_FORMAT
-                });
+                    msg: `params wrong format with cid: ${cid}`,
+                    path: req.path,
+                    status: HttpStatusCode.BAD_REQUEST,
+                    method: req.method,
+                    data: {
+                        cid: cid,
+                    }
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
             } else {
                 const cart = await Cart.findOne({ _id: cid });
                 if (!cart || auth.uid !== cart.uid) {
-                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    const response: any = {
                         error: true,
-                        code: CodeResponse.PRODUCT_NOT_FOUND
-                    });
+                        msg: `can't found information product in cart with cid: ${cid}`,
+                        path: req.path,
+                        status: HttpStatusCode.BAD_REQUEST,
+                        method: req.method,
+                        data: {
+                            cid: cid
+                        }
+                    };
+                    Log.default(response)
+                    await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                 } else {
                     const old = await cart.delete();
-                    await res.status(HttpStatusCode.OK).send({
+                    const response: any = {
                         error: false,
-                        data: old
-                    });
+                        data: old,
+                        status: HttpStatusCode.OK,
+                        msg: `success! delete product in cart with cid: ${cid}`,
+                        path: req.path,
+                        method: req.method,
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.OK).send(response);
                 }
             }
         });
