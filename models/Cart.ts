@@ -5,6 +5,7 @@ interface ICart {
     uid: string;
     quantily: number;
     classify?: number;
+    date: Date
 }
 
 interface CartModel extends ICart, Document {
@@ -15,7 +16,8 @@ const CartSchema = new Schema({
     uid: { type: String, required: true },
     pid: { type: String, required: true },
     quantily: { type: Number, required: true, min: 0 },
-    classify: { type: Number }
+    classify: { type: Number },
+    date: { type: Date },
 });
 
 const Cart: Model<CartModel> = model<CartModel>('cart', CartSchema);
