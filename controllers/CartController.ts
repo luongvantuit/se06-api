@@ -122,6 +122,33 @@ class CartController extends IController {
                                 pid: pid,
                             },
                         });
+                    } else if (classify > product.classifies.length) {
+                        await res.status(HttpStatusCode.NOT_FOUND).send({
+                            error: true,
+                            code: CodeResponse.PRODUCT_NOT_FOUND,
+                            msg: `not found product with classfiy`,
+                            status: HttpStatusCode.NOT_FOUND,
+                            path: req.path,
+                            method: req.method,
+                            data: {
+                                pid: pid,
+                                classify: classify
+                            }
+                        });
+                    } else if (quantily > product.classifies[classify].quantily) {
+                        await res.status(HttpStatusCode.BAD_REQUEST).send({
+                            error: true,
+                            code: CodeResponse.BODY_PROPERTY_WRONG_FORMAT,
+                            msg: `product quantity is not enough`,
+                            status: HttpStatusCode.BAD_REQUEST,
+                            path: req.path,
+                            method: req.method,
+                            data: {
+                                pid: pid,
+                                quantily: quantily,
+                                quantilyCurrency: product.classifies[classify].quantily,
+                            }
+                        });
                     } else {
                         const cart = new Cart({
                             uid: auth.uid,
@@ -160,8 +187,14 @@ class CartController extends IController {
         }
     }
 
-    public update(req: IRequest, res: IResponse) {
-
+    /**
+     * 
+     * @param req 
+     * @param res 
+     */
+    public async update(req: IRequest, res: IResponse) {
+        const { cid } = await req.params;
+        const { quantily, classify } = await req.body;
     }
 
     /**
