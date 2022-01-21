@@ -1,6 +1,7 @@
 import IController from "../interfaces/vendors/IController";
 import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
+import Log from "../middlewares/Log";
 import User, { IUser } from "../models/User";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
@@ -10,14 +11,27 @@ class UserController extends IController {
         await Token.verify(req, res, async (req, res, auth) => {
             const user = await User.findOne({ uid: auth.uid })
             if (!user) {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                });
+                    status: HttpStatusCode.BAD_REQUEST,
+                    path: req.path,
+                    method: req.method,
+                    msg: `not found information user with uid: ${auth.uid}`,
+                    data: {}
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
             } else {
-                await res.status(HttpStatusCode.OK).send({
+                const response: any = {
                     error: false,
                     data: user,
-                });
+                    status: HttpStatusCode.OK,
+                    path: req.path,
+                    method: req.method,
+                    msg: 'success!'
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.OK).send(response);
             }
         });
     }
@@ -38,15 +52,30 @@ class UserController extends IController {
                 bio: user.bio,
                 birthday: user.birthday,
                 email: user.email,
-            }
-            await res.status(HttpStatusCode.OK).send({
+            };
+            const response: any = {
                 error: false,
                 data: resUser,
-            });
+                method: req.method,
+                path: req.path,
+                status: HttpStatusCode.OK,
+                msg: 'success!',
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.OK).send(response);
         } else {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-            });
+                data: {
+                    uid: uid
+                },
+                status: HttpStatusCode.NOT_FOUND,
+                method: req.method,
+                path: req.path,
+                msg: `not found information of user with uid: ${uid}`
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.NOT_FOUND).send(response);
         }
     }
 
@@ -55,9 +84,18 @@ class UserController extends IController {
         await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
             if (oldUser) {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                });
+                    status: HttpStatusCode.METHOD_NOT_ALLOWED,
+                    path: req.path,
+                    method: req.method,
+                    data: {
+                        uid: auth.uid,
+                    },
+                    msg: `record of user with uid: ${auth.uid} existed`
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.METHOD_NOT_ALLOWED).send(response);
             } else {
                 const {
                     address,
@@ -80,15 +118,35 @@ class UserController extends IController {
                 const error = await newUser.validateSync();
                 if (!error) {
                     const resBody = await newUser.save();
-                    await res.status(HttpStatusCode.OK).send({
+                    const response: any = {
                         error: false,
                         data: resBody,
-                    });
+                        status: HttpStatusCode.OK,
+                        path: req.path,
+                        method: req.method,
+                        msg: 'success!'
+                    }
+                    Log.default(response)
+                    await res.status(HttpStatusCode.OK).send(response);
                 } else {
-                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    const response: any = {
                         error: true,
-                        data: error
-                    });
+                        data: {
+                            address: address,
+                            displayName: displayName,
+                            displayPhoto: displayPhoto,
+                            displayPhotoCover: displayPhotoCover,
+                            birthday: birthday,
+                            bio: bio,
+                            error: error
+                        },
+                        method: req.method,
+                        path: req.path,
+                        msg: 'body format wrong',
+                        status: HttpStatusCode.BAD_REQUEST,
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                 }
             }
         });
@@ -98,9 +156,18 @@ class UserController extends IController {
         await Token.verify(req, res, async (req, res, auth) => {
             const oldUser = await User.findOne({ uid: auth.uid });
             if (!oldUser) {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                });
+                    status: HttpStatusCode.METHOD_NOT_ALLOWED,
+                    data: {
+                        uid: auth.uid,
+                    },
+                    msg: `record of information user with uid: ${auth.uid} is not existed`,
+                    path: req.path,
+                    method: req.method
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.METHOD_NOT_ALLOWED).send(response);
             } else {
                 const {
                     address,
@@ -119,16 +186,36 @@ class UserController extends IController {
                 oldUser.email = auth.email;
                 const error = await oldUser.validateSync();
                 if (error) {
-                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    const response: any = {
                         error: true,
-                        data: error
-                    });
+                        data: {
+                            address: address,
+                            displayName: displayName,
+                            displayPhoto: displayPhoto,
+                            displayPhotoCover: displayPhotoCover,
+                            birthday: birthday,
+                            bio: bio,
+                            error: error
+                        },
+                        status: HttpStatusCode.BAD_REQUEST,
+                        path: req.path,
+                        method: req.method,
+                        msg: `body format wrong`
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                 } else {
                     const newUser = await oldUser.save();
-                    await res.status(HttpStatusCode.OK).send({
+                    const response: any = {
                         error: false,
                         data: newUser,
-                    });
+                        method: req.method,
+                        path: req.path,
+                        msg: 'success!',
+                        status: HttpStatusCode.OK,
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.OK).send(response);
                 }
             }
         })

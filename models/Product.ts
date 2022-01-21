@@ -6,7 +6,7 @@ interface IProduct {
     displayName?: string,
     photos?: string[],
     address?: string,
-    classifies?: string[],
+    classifies: string[],
     categories?: string[],
     state: string,
     date: Date
