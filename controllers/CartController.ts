@@ -4,6 +4,7 @@ import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
 import Log from "../middlewares/Log";
 import Cart from "../models/Cart";
+import Classify from "../models/Classify";
 import Product from "../models/Product";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Token from "../perform/Token";
@@ -115,7 +116,7 @@ class CartController extends IController {
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-        } else if (typeof quantily !== 'number' || typeof classify !== 'number') {
+        } else if (typeof quantily !== 'number' || !ObjectId.isValid(classify)) {
             const response = {
                 error: true,
                 msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
@@ -162,71 +163,75 @@ class CartController extends IController {
                         }
                         Log.default(response);
                         await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-                    } else if (classify > product.classifies.length) {
-                        const response: any = {
-                            error: true,
-                            msg: `not found product with classfiy`,
-                            status: HttpStatusCode.NOT_FOUND,
-                            path: req.path,
-                            method: req.method,
-                            data: {
-                                pid: pid,
-                                classify: classify
-                            }
-                        };
-                        Log.default(response);
-                        await res.status(HttpStatusCode.NOT_FOUND).send(response);
-                    } else if (quantily > product.classifies[classify].quantily) {
-                        const response: any = {
-                            error: true,
-                            msg: `product quantity is not enough`,
-                            status: HttpStatusCode.BAD_REQUEST,
-                            path: req.path,
-                            method: req.method,
-                            data: {
-                                pid: pid,
-                                quantily: quantily,
-                                quantilyCurrency: product.classifies[classify].quantily,
-                            }
-                        };
-                        Log.default(response);
-                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                     } else {
-                        const cart = new Cart({
-                            uid: auth.uid,
-                            quantily: quantily,
-                            classify: classify,
-                            pid: pid,
-                            date: Date.now()
-                        })
-                        const error = await cart.validateSync();
-                        if (!error) {
+                        const clazz = await Classify.findOne({ _id: classify, pid: product._id });
+                        if (!clazz) {
                             const response: any = {
                                 error: true,
-                                msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
+                                msg: `not found information classify of product with id ${classify}`,
+                                status: HttpStatusCode.NOT_FOUND,
                                 path: req.path,
-                                status: HttpStatusCode.BAD_REQUEST,
                                 method: req.method,
                                 data: {
+                                    classify: classify
+                                }
+                            };
+                            Log.default(response);
+                            await res.status(HttpStatusCode.NOT_FOUND).send(response)
+                        } else {
+                            if (quantily > clazz.quantily) {
+                                const response: any = {
+                                    error: true,
+                                    msg: `product quantity is not enough`,
+                                    status: HttpStatusCode.BAD_REQUEST,
+                                    path: req.path,
+                                    method: req.method,
+                                    data: {
+                                        pid: pid,
+                                        quantily: quantily,
+                                        quantilyCurrency: clazz.quantily,
+                                    }
+                                };
+                                Log.default(response);
+                                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                            } else {
+                                const cart = new Cart({
+                                    uid: auth.uid,
                                     quantily: quantily,
                                     classify: classify,
-                                },
-                            };
-                            Log.default(response);
-                            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-                        } else {
-                            await cart.save();
-                            const resCart = await Cart.find({ uid: auth.uid });
-                            const response: any = {
-                                error: true,
-                                msg: `success! add product with pid: ${pid} to cart`,
-                                path: req.path,
-                                status: HttpStatusCode.OK,
-                                method: req.method,
-                                data: resCart,
-                            };
-                            Log.default(response);
-                            await res.status(HttpStatusCode.OK).send(response);
+                                    pid: pid,
+                                    date: Date.now()
+                                })
+                                const error = await cart.validateSync();
+                                if (!error) {
+                                    const response: any = {
+                                        error: true,
+                                        msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
+                                        path: req.path,
+                                        status: HttpStatusCode.BAD_REQUEST,
+                                        method: req.method,
+                                        data: {
+                                            quantily: quantily,
+                                            classify: classify,
+                                        },
+                                    };
+                                    Log.default(response);
+                                    await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                                } else {
+                                    await cart.save();
+                                    const resCart = await Cart.find({ uid: auth.uid });
+                                    const response: any = {
+                                        error: true,
+                                        msg: `success! add product with pid: ${pid} to cart`,
+                                        path: req.path,
+                                        status: HttpStatusCode.OK,
+                                        method: req.method,
+                                        data: resCart,
+                                    };
+                                    Log.default(response);
+                                    await res.status(HttpStatusCode.OK).send(response);
+                                }
+                            }
                         }
                     }
                 }
@@ -270,7 +275,7 @@ class CartController extends IController {
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-        } else if (typeof quantily !== 'number' || typeof classify !== 'number') {
+        } else if (typeof quantily !== 'number' || !ObjectId.isValid(classify)) {
             const response: any = {
                 error: true,
                 msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
@@ -315,11 +320,58 @@ class CartController extends IController {
                         Log.default(response);
                         await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                     } else {
-                        if (classify > product.classifies.length) {
+                        const clazz = await Classify.findOne({ _id: classify, pid: product._id });
+                        if (clazz) {
+                            if (quantily > clazz.quantily && clazz.quantily >= cart.quantily) {
+                                const response: any = {
+                                    error: true,
+                                    msg: `product quantity is not enough`,
+                                    status: HttpStatusCode.BAD_REQUEST,
+                                    path: req.path,
+                                    method: req.method,
+                                    data: {
+                                        classify: classify
+                                    }
+                                };
+                                Log.default(response);
+                                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                            } else if (cart.quantily > clazz.quantily) {
+                                cart.quantily = clazz.quantily;
+                                const newCart = await cart.save();
+                                const response: any = {
+                                    error: true,
+                                    msg: `quantity current greater than quantily available, update quantity current of product in cart`,
+                                    status: HttpStatusCode.BAD_REQUEST,
+                                    path: req.path,
+                                    method: req.method,
+                                    data: {
+                                        quantilyRequest: quantily,
+                                        quantilyCurrency: cart.quantily,
+                                        quantilyAvailable: clazz.quantily,
+                                        ...newCart
+                                    },
+                                };
+                                Log.default(response);
+                                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                            } else {
+                                cart.quantily = quantily;
+                                const newCart = await cart.save();
+                                const response: any = {
+                                    error: true,
+                                    msg: `update information of product in cart success!`,
+                                    status: HttpStatusCode.OK,
+                                    path: req.path,
+                                    method: req.method,
+                                    data: newCart
+                                };
+                                Log.default(response);
+                                await res.status(HttpStatusCode.OK).send(response);
+                            }
+                        } else {
                             const response: any = {
                                 error: true,
                                 msg: `not found classfiy of product with pid: ${cart.pid}`,
-                                status: HttpStatusCode.BAD_REQUEST,
+                                status: HttpStatusCode.NOT_FOUND,
                                 path: req.path,
                                 method: req.method,
                                 data: {
@@ -328,21 +380,6 @@ class CartController extends IController {
                             };
                             Log.default(response);
                             await res.status(HttpStatusCode.NOT_FOUND).send(response);
-                        } else if (quantily > product.classifies[classify].quantily && product.classifies[classify].quantily >= cart.quantily) {
-                            const response: any = {
-                                error: true,
-                                msg: `product quantity is not enough`,
-                                status: HttpStatusCode.BAD_REQUEST,
-                                path: req.path,
-                                method: req.method,
-                                data: {
-                                    classify: classify
-                                }
-                            };
-                            Log.default(response);
-                            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-                        } else if (cart.quantily > product.classifies[classify].quantily) {
-
                         }
                     }
                 }
