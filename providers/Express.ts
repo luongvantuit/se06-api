@@ -1,6 +1,6 @@
 import express from "express";
 import Kernal from "../middlewares/Kernal";
-import CodeResponse from "../perform/CodeResponse";
+import Log from "../middlewares/Log";
 import HttpStatusCode from "../perform/HttpStatusCode";
 import Locals from "./Locals";
 import Routes from "./Routes";
@@ -26,10 +26,15 @@ class Express {
     private mountRoutes(): void {
         this.app = Routes.mountAPI(this.app);
         this.app.use('*', async function (req, res) {
-            await res.status(HttpStatusCode.NOT_FOUND).send({
+            const response = {
                 error: true,
-                code: CodeResponse.NOT_FOUND
-            })
+                path: req.path,
+                status: HttpStatusCode.NOT_FOUND,
+                method: req.method,
+                msg: `not found information api with path: ${req.path}`
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.NOT_FOUND).send(response);
         })
     }
 

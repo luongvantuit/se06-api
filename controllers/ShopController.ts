@@ -5,6 +5,7 @@ import Token from "../perform/Token";
 import Shop from '../models/Shop';
 import HttpStatusCode from "../perform/HttpStatusCode";
 import { ObjectId } from "mongodb";
+import Log from "../middlewares/Log";
 
 class ShopController extends IController {
     public async index(req: IRequest, res: IResponse) {
@@ -18,25 +19,49 @@ class ShopController extends IController {
         for (let index: number = mLimit * mPage; index < shops.length; index++) {
             responseShops.push(shops[index])
         }
-        res.status(HttpStatusCode.OK).send({
+        const response: any = {
             error: false,
             data: responseShops,
             maxPage: maxPage,
-        });
+            status: HttpStatusCode.OK,
+            path: req.path,
+            method: req.method,
+            msg: `get all shop success! limit: ${limit},page: ${page}`
+        };
+        Log.default(response)
+        await res.status(HttpStatusCode.OK).send(response);
     }
 
     public async show(req: IRequest, res: IResponse) {
         const { sid } = await req.params;
         if (!ObjectId.isValid(sid)) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-            });
+                status: HttpStatusCode.BAD_REQUEST,
+                path: req.path,
+                method: req.method,
+                data: {
+                    sid: sid
+                },
+                msg: `params format wrong! sid: ${sid}`
+            };
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             const shop = await Shop.findById(sid);
             if (!shop) {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                });
+                    status: HttpStatusCode.NOT_FOUND,
+                    path: req.path,
+                    method: req.method,
+                    data: {
+                        sid: sid
+                    },
+                    msg: `not found shop with sid: ${sid}`
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.NOT_FOUND).send(response);
             } else {
                 const resBody: any = {
                     created: shop.created,
@@ -45,10 +70,16 @@ class ShopController extends IController {
                     displayPhoto: shop.displayPhoto,
                     displayPhotoCover: shop.displayPhotoCover,
                 }
-                await res.status(HttpStatusCode.OK).send({
+                const response: any = {
                     error: false,
                     data: resBody,
-                });
+                    status: HttpStatusCode.OK,
+                    path: req.path,
+                    method: req.method,
+                    msg: `success! sid: ${sid}`
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.OK).send(response);
             }
         }
     }
@@ -72,15 +103,33 @@ class ShopController extends IController {
             const error = await newShop.validateSync();
             if (!error) {
                 const shop = await newShop.save();
-                await res.status(HttpStatusCode.OK).send({
+                const response: any = {
                     error: false,
                     data: shop,
-                });
+                    status: HttpStatusCode.OK,
+                    path: req.path,
+                    method: req.method,
+                    msg: `success! create new shop`
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.OK).send(response);
             } else {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                    data: error,
-                });
+                    data: {
+                        error: error,
+                        description: description,
+                        displayName: displayName,
+                        displayPhoto: displayPhoto,
+                        displayPhotoCover: displayPhotoCover
+                    },
+                    status: HttpStatusCode.BAD_REQUEST,
+                    path: req.path,
+                    method: req.method,
+                    msg: 'body format wrong!'
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
             }
         })
     }
@@ -95,15 +144,33 @@ class ShopController extends IController {
         } = await req.body;
         await Token.verify(req, res, async (req, res, auth) => {
             if (!ObjectId.isValid(sid)) {
-                await res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                });
+                    status: HttpStatusCode.BAD_REQUEST,
+                    path: req.path,
+                    method: req.method,
+                    data: {
+                        sid: sid
+                    },
+                    msg: `param format wrong! sid: ${sid}`
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
             } else {
                 const oldShop = await Shop.findById(sid)
                 if (!oldShop || oldShop.uid !== auth.uid) {
-                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    const response: any = {
                         error: true,
-                    });
+                        status: HttpStatusCode.NOT_FOUND,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            sid: sid
+                        },
+                        msg: `not found shop with sid: ${sid}`
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
                     oldShop.description = description ?? oldShop.description;
                     oldShop.displayName = displayName ?? oldShop.displayName;
@@ -112,15 +179,33 @@ class ShopController extends IController {
                     const error = await oldShop.validateSync();
                     if (!error) {
                         const newShop = await oldShop.save();
-                        await res.status(HttpStatusCode.OK).send({
+                        const response: any = {
                             error: false,
                             data: newShop,
-                        });
+                            status: HttpStatusCode.OK,
+                            path: req.path,
+                            method: req.method,
+                            msg: `success! update information shop with sid: ${sid}`
+                        }
+                        Log.default(response);
+                        await res.status(HttpStatusCode.OK).send(response);
                     } else {
-                        await res.status(HttpStatusCode.BAD_REQUEST).send({
+                        const response: any = {
                             error: true,
-                            data: error,
-                        });
+                            data: {
+                                error: error,
+                                description: description,
+                                displayName: displayName,
+                                displayPhoto: displayPhoto,
+                                displayPhotoCover: displayPhotoCover
+                            },
+                            status: HttpStatusCode.BAD_REQUEST,
+                            path: req.path,
+                            method: req.method,
+                            msg: 'body format wrong!'
+                        }
+                        Log.default(response)
+                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                     }
                 }
             }
@@ -130,22 +215,46 @@ class ShopController extends IController {
     public async destroy(req: IRequest, res: IResponse) {
         const { sid } = await req.params;
         if (!ObjectId.isValid(sid)) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-            });
+                status: HttpStatusCode.BAD_REQUEST,
+                path: req.path,
+                method: req.method,
+                data: {
+                    sid: sid
+                },
+                msg: `param format wrong! sid: ${sid}`
+            };
+            Log.default(response)
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
                 const shop = await Shop.findById(sid);
                 if (!shop || shop.uid !== auth.uid) {
-                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    const response: any = {
                         error: true,
-                    });
+                        status: HttpStatusCode.NOT_FOUND,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            sid: sid
+                        },
+                        msg: `not found shop with sid: ${sid}`
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
                     const oldShop = await shop.delete();
-                    await res.status(HttpStatusCode.BAD_REQUEST).send({
+                    const response: any = {
                         error: false,
                         data: oldShop,
-                    });
+                        status: HttpStatusCode.OK,
+                        path: req.path,
+                        method: req.method,
+                        msg: `delete success! sid: ${sid}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.OK).send(response);
                 }
             })
         }

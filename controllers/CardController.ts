@@ -122,25 +122,54 @@ class CardController extends IController {
         } = await req.body;
         await Token.verify(req, res, async (req, res, auth) => {
             if (!cardNumber) {
-                res.status(HttpStatusCode.BAD_REQUEST).send({
+                const response: any = {
                     error: true,
-                });
+                    data: {
+                        cardNumber: cardNumber,
+                    },
+                    status: HttpStatusCode.BAD_REQUEST,
+                    path: req.path,
+                    method: req.method,
+                    msg: `body property card number is empty`
+                };
+                Log.default(response);
+                await res.status(HttpStatusCode.BAD_REQUEST).send(response);
             } else {
                 const oCard = await Card.findOne({ uid: auth.uid, cardNumber: cardNumber });
                 if (!oCard) {
-                    res.status(HttpStatusCode.OK).send({
+                    const response: any = {
                         error: true,
-                    });
+                        status: HttpStatusCode.NOT_FOUND,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            cardNumber: cardNumber
+                        },
+                        msg: `not found information card with card number: ${cardNumber}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.OK).send(response);
                 } else {
                     oCard.cardNumber = cardNumber ?? oCard.cardNumber;
                     oCard.cvv = cvv ?? oCard.cvv;
                     oCard.ownerName = ownerName ?? oCard.ownerName;
                     const error = await oCard.validateSync();
-                    if (error !== null) {
-                        res.status(HttpStatusCode.BAD_REQUEST).send({
+                    if (error) {
+                        const response: any = {
                             error: true,
-                            data: error,
-                        });
+                            data: {
+                                error: error,
+                                cardNumber: cardNumber,
+                                cvv: cvv,
+                                ownerName: ownerName
+                            },
+                            status: HttpStatusCode.BAD_REQUEST,
+                            path: req.path,
+                            method: req.method,
+                            msg: `body property format wrong`
+                        };
+                        Log.default(response);
+                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                     } else {
                         const rCard = await oCard.save();
                         const responseCard: { _id: string } & ICard = {
@@ -148,10 +177,15 @@ class CardController extends IController {
                             ownerName: rCard.ownerName,
                             _id: rCard._id.toJSON(),
                         }
-                        res.status(HttpStatusCode.OK).send({
+                        const response = {
                             error: false,
                             data: responseCard,
-                        });
+                            status: HttpStatusCode.OK,
+                            method: req.method,
+                            path: req.path,
+                            msg: 'update information card success!'
+                        }
+                        await res.status(HttpStatusCode.OK).send(response);
                     }
                 }
             }
@@ -161,9 +195,18 @@ class CardController extends IController {
     public async destroy(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid)) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-            });
+                status: HttpStatusCode.BAD_REQUEST,
+                path: req.path,
+                method: req.method,
+                data: {
+                    cid: cid
+                },
+                msg: `param format wrong! cid: ${cid}`
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
                 const card = await Card.findOne({
@@ -171,9 +214,18 @@ class CardController extends IController {
                     _id: cid,
                 });
                 if (!card) {
-                    await res.status(HttpStatusCode.NOT_FOUND).send({
+                    const response: any = {
                         error: true,
-                    });
+                        status: HttpStatusCode.NOT_FOUND,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            cid: cid
+                        },
+                        msg: `not found information card with cid: ${cid}`
+                    };
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
                     const oldCard = await card.delete();
                     const responseCard: { _id: string } & ICard = {
@@ -181,10 +233,16 @@ class CardController extends IController {
                         ownerName: oldCard.ownerName,
                         _id: oldCard._id.toString(),
                     }
-                    await res.status(HttpStatusCode.OK).send({
+                    const response: any = {
                         error: false,
                         data: responseCard,
-                    });
+                        path: req.path,
+                        method: req.method,
+                        status: HttpStatusCode.OK,
+                        msg: `success!`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.OK).send(response);
                 }
             });
         }
@@ -194,10 +252,18 @@ class CardController extends IController {
         Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid)) {
-            await res.status(HttpStatusCode.BAD_REQUEST).send({
+            const response: any = {
                 error: true,
-    
-            });
+                data: {
+                    cid: cid
+                },
+                path: req.path,
+                method: req.method,
+                status: HttpStatusCode.BAD_REQUEST,
+                msg: `param cid format wrong! cid: ${cid}`
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
                 const card = await Card.findOne({
@@ -205,19 +271,34 @@ class CardController extends IController {
                     _id: cid,
                 });
                 if (!card) {
-                    await res.status(HttpStatusCode.NOT_FOUND).send({
+                    const response = {
                         error: true,
-                    });
+                        status: HttpStatusCode.NOT_FOUND,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            cid: cid
+                        },
+                        msg: `not found information card with cid: ${cid}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
                     const responseCard: { _id: string } & ICard = {
                         cardNumber: card.cardNumber.substring(0, 3),
                         ownerName: card.ownerName,
                         _id: card._id.toString(),
                     }
-                    await res.status(HttpStatusCode.OK).send({
+                    const response = {
                         error: false,
                         data: responseCard,
-                    });
+                        status: HttpStatusCode.OK,
+                        path: req.path,
+                        method: req.method,
+                        msg: `delete card with cid: ${cid} success!`
+                    };
+                    Log.default(response)
+                    await res.status(HttpStatusCode.OK).send(response);
                 }
             });
         }
