@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "adf2c580-1223-4a4b-a1cc-09181925e32b",
+		"name": "User API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get user need id token",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODIwNjM0LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MjA2MzQsImV4cCI6MTY0MjgyNDIzNCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.CWoLrOE5y-GuEqp-MCHGc51ENpFMZijeQerqdw7loEa5f299JPLZOSoPXu4Mew0QxdoRaAiupQUbqN8dx-zNChSr3JMK-5x19mhpomhxrEDFyBEQ5JivPoe6Gpo4a5EuPCrz_Qy4XN3-77FOrcs3WA6sepCyWi5Ir9AFku5bMe5tTHagFMeiZCYKN6e-YdZWM6u7kQKYuhz1-BngzUyBSy-bTDahKwKsCL_mq3Yx9N9HkYIOZERs7fbS1UmSaVdojJdVjID_LiSj9LC1zfGGy_-YEcVyTwN0yRqyVviVkdMTN0bW0mF9y9U4fvNW6IYdsplmhBcWuvGe9iKdfMDwqQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"luongvantuit@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/user",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get information user by uid",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"uid\": \"sVPRS2knWFbNaxczLQnGXnpiwC52\"}"
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/user/sVPRS2knWFbNaxczLQnGXnpiwC52",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user",
+						"sVPRS2knWFbNaxczLQnGXnpiwC52"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create information user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"displayName\": \"Lương Văn Tú\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/user",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update information user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"displayName\": \"Tú Siêu nhân vl\",\n    \"bio\": \"is Siêu nhân\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/user",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

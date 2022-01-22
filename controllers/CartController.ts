@@ -11,10 +11,7 @@ import Token from "../perform/Token";
 
 class CartController extends IController {
 
-    private TAG: string = "CARTCONTROLLER"
-
     public async index(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         await Token.verify(req, res, async (req, res, auth) => {
             const carts = await Cart.find({ uid: auth.uid });
             const response: any = {
@@ -31,7 +28,6 @@ class CartController extends IController {
     }
 
     public async show(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid)) {
             const response: any = {
@@ -86,9 +82,8 @@ class CartController extends IController {
      * @param res 
      */
     public async create(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { pid } = await req.params;
-        const { quantily, classify } = await req.body;
+        const { quantity, classify } = await req.body;
         if (!ObjectId.isValid(pid)) {
             const response = {
                 error: true,
@@ -102,7 +97,7 @@ class CartController extends IController {
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-        } else if (!quantily || !classify) {
+        } else if (!quantity || !classify) {
             const response: any = {
                 error: true,
                 msg: `body property is empty`,
@@ -110,21 +105,21 @@ class CartController extends IController {
                 status: HttpStatusCode.BAD_REQUEST,
                 method: req.method,
                 data: {
-                    quantily: quantily,
+                    quantily: quantity,
                     classify: classify
                 },
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-        } else if (typeof quantily !== 'number' || !ObjectId.isValid(classify)) {
+        } else if (typeof quantity !== 'number' || !ObjectId.isValid(classify)) {
             const response = {
                 error: true,
-                msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
+                msg: `body wrong format with quantily: ${quantity}, classify: ${classify}`,
                 path: req.path,
                 status: HttpStatusCode.BAD_REQUEST,
                 method: req.method,
                 data: {
-                    quantily: quantily,
+                    quantily: quantity,
                     classify: classify,
                 },
             };
@@ -156,7 +151,7 @@ class CartController extends IController {
                             status: HttpStatusCode.BAD_REQUEST,
                             method: req.method,
                             data: {
-                                quantily: quantily,
+                                quantily: quantity,
                                 classify: classify,
                                 pid: pid,
                             },
@@ -179,7 +174,7 @@ class CartController extends IController {
                             Log.default(response);
                             await res.status(HttpStatusCode.NOT_FOUND).send(response)
                         } else {
-                            if (quantily > clazz.quantily) {
+                            if (quantity > clazz.quantity) {
                                 const response: any = {
                                     error: true,
                                     msg: `product quantity is not enough`,
@@ -188,8 +183,8 @@ class CartController extends IController {
                                     method: req.method,
                                     data: {
                                         pid: pid,
-                                        quantily: quantily,
-                                        quantilyCurrency: clazz.quantily,
+                                        quantily: quantity,
+                                        quantilyCurrency: clazz.quantity,
                                     }
                                 };
                                 Log.default(response);
@@ -197,29 +192,28 @@ class CartController extends IController {
                             } else {
                                 const cart = new Cart({
                                     uid: auth.uid,
-                                    quantily: quantily,
+                                    quantity: quantity,
                                     classify: classify,
                                     pid: pid,
                                     date: Date.now()
                                 })
                                 const error = await cart.validateSync();
-                                if (!error) {
+                                if (error) {
                                     const response: any = {
                                         error: true,
-                                        msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
+                                        msg: `body wrong format with quantily: ${quantity}, classify: ${classify}`,
                                         path: req.path,
                                         status: HttpStatusCode.BAD_REQUEST,
                                         method: req.method,
                                         data: {
-                                            quantily: quantily,
+                                            quantily: quantity,
                                             classify: classify,
                                         },
                                     };
                                     Log.default(response);
                                     await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                                 } else {
-                                    await cart.save();
-                                    const resCart = await Cart.find({ uid: auth.uid });
+                                    const resCart = await cart.save();
                                     const response: any = {
                                         error: true,
                                         msg: `success! add product with pid: ${pid} to cart`,
@@ -247,7 +241,7 @@ class CartController extends IController {
      */
     public async update(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
-        const { quantily, classify } = await req.body;
+        const { quantity, classify } = await req.body;
         if (!ObjectId.isValid(cid)) {
             const response: any = {
                 error: true,
@@ -261,7 +255,7 @@ class CartController extends IController {
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-        } else if (!quantily || !classify) {
+        } else if (!quantity || !classify) {
             const response: any = {
                 error: true,
                 msg: `body property is empty`,
@@ -269,21 +263,21 @@ class CartController extends IController {
                 status: HttpStatusCode.BAD_REQUEST,
                 method: req.method,
                 data: {
-                    quantily: quantily,
+                    quantily: quantity,
                     classify: classify
                 },
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-        } else if (typeof quantily !== 'number' || !ObjectId.isValid(classify)) {
+        } else if (typeof quantity !== 'number' || !ObjectId.isValid(classify)) {
             const response: any = {
                 error: true,
-                msg: `body wrong format with quantily: ${quantily}, classify: ${classify}`,
+                msg: `body wrong format with quantily: ${quantity}, classify: ${classify}`,
                 path: req.path,
                 status: HttpStatusCode.BAD_REQUEST,
                 method: req.method,
                 data: {
-                    quantily: quantily,
+                    quantily: quantity,
                     classify: classify
                 },
             };
@@ -322,7 +316,7 @@ class CartController extends IController {
                     } else {
                         const clazz = await Classify.findOne({ _id: classify, pid: product._id });
                         if (clazz) {
-                            if (quantily > clazz.quantily && clazz.quantily >= cart.quantily) {
+                            if (quantity > clazz.quantity && clazz.quantity >= cart.quantity) {
                                 const response: any = {
                                     error: true,
                                     msg: `product quantity is not enough`,
@@ -335,8 +329,8 @@ class CartController extends IController {
                                 };
                                 Log.default(response);
                                 await res.status(HttpStatusCode.BAD_REQUEST).send(response);
-                            } else if (cart.quantily > clazz.quantily) {
-                                cart.quantily = clazz.quantily;
+                            } else if (cart.quantity > clazz.quantity) {
+                                cart.quantity = clazz.quantity;
                                 const newCart = await cart.save();
                                 const response: any = {
                                     error: true,
@@ -345,16 +339,16 @@ class CartController extends IController {
                                     path: req.path,
                                     method: req.method,
                                     data: {
-                                        quantilyRequest: quantily,
-                                        quantilyCurrency: cart.quantily,
-                                        quantilyAvailable: clazz.quantily,
+                                        quantilyRequest: quantity,
+                                        quantilyCurrency: cart.quantity,
+                                        quantilyAvailable: clazz.quantity,
                                         ...newCart
                                     },
                                 };
                                 Log.default(response);
                                 await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                             } else {
-                                cart.quantily = quantily;
+                                cart.quantity = quantity;
                                 const newCart = await cart.save();
                                 const response: any = {
                                     error: true,
@@ -393,7 +387,6 @@ class CartController extends IController {
      * @param res 
      */
     public async destroy(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         await Token.verify(req, res, async (req, res, auth) => {
             if (!ObjectId.isValid(cid)) {

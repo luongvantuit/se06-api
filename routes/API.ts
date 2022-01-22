@@ -1,6 +1,7 @@
 import { Router, json } from "express";
 import CardController from "../controllers/CardController";
 import CartController from "../controllers/CartController";
+import ClassifyController from "../controllers/ClassifyController";
 import ProductController from "../controllers/ProductController";
 import ShopController from "../controllers/ShopController";
 import UploadFileController from "../controllers/UploadFileController";
@@ -32,8 +33,8 @@ API.get('/products', ProductController.index);
 API.get('/products/:sid', ProductController.index);
 API.get('/product/:pid', ProductController.show);
 API.post('/product/:sid', json(), ProductController.create);
-API.put('/product/:sid/:pid', json(), ProductController.update);
-API.delete('/product/:sid/:pid', json(), ProductController.destroy);
+API.put('/product/:pid', json(), ProductController.update);
+API.delete('/product/:pid', json(), ProductController.destroy);
 
 
 // API cart manager
@@ -42,6 +43,18 @@ API.get('/cart', CartController.index);
 API.get('/cart/:cid', CartController.show);
 API.post('/cart/:pid', json(), CartController.create);
 API.put('/cart/:cid', json(), CartController.update);
+
+/**
+ * API classify of product controller
+ * pid is product id
+ * cid is classify id
+ */
+
+API.get('/classifies/:pid', ClassifyController.index);
+API.get('/classify/:cid', ClassifyController.show);
+API.post('/classify/:pid', json(), ClassifyController.create);
+API.delete('/classify/:cid', ClassifyController.destroy);
+API.put('/classify/:cid', json(), ClassifyController.update);
 
 // API upload file
 API.post('/upload', UploadFileController.create);

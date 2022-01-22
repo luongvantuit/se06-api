@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "f20a2211-4ea7-4437-a604-c7a0ca531282",
+		"name": "Classify API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Delete classify",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODMyNTk0LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MzI1OTQsImV4cCI6MTY0MjgzNjE5NCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mUbgoB8rNUCfOFZkoETwAv0hcFJYzo8hCABR2VQWTWMP2NLPaAhsK5ang5Bc9dAUNoIc3gLLcNB6kNYl6RruVNMSNU5kEOepTdzisOxPxSJOrTw-xOOT8V5LwA9KLG4Lwr3M_C4xdy_og52cA_bajBK3Mn5N1j0d0bxf_K_iesXOjRuuXqObp16ucJK61X4P2S6Pad4dHj7xFpIEkOXEjhanGYNQa8QqkuqcCL2TbwyrGJ_EfWp7wbu03tpzNCrM7LC1wsxf1gbzCbVOFlMZrmW8A_6XyeUeNfyARVGuZseqQmgdfd1mpJQodjTi54QKw7VFOXXWrD8TINhwkaK0YA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/classify/61eb972ca4deae8987409535",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"classify",
+						"61eb972ca4deae8987409535"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get information classify by classify id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/classify/61eba392cd4a0a06b1a530f2",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"classify",
+						"61eba392cd4a0a06b1a530f2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all information classify of product id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/classifies/61eb972ca4deae8987409535",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"classifies",
+						"61eb972ca4deae8987409535"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update classify with classify id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODMyNTk0LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MzI1OTQsImV4cCI6MTY0MjgzNjE5NCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mUbgoB8rNUCfOFZkoETwAv0hcFJYzo8hCABR2VQWTWMP2NLPaAhsK5ang5Bc9dAUNoIc3gLLcNB6kNYl6RruVNMSNU5kEOepTdzisOxPxSJOrTw-xOOT8V5LwA9KLG4Lwr3M_C4xdy_og52cA_bajBK3Mn5N1j0d0bxf_K_iesXOjRuuXqObp16ucJK61X4P2S6Pad4dHj7xFpIEkOXEjhanGYNQa8QqkuqcCL2TbwyrGJ_EfWp7wbu03tpzNCrM7LC1wsxf1gbzCbVOFlMZrmW8A_6XyeUeNfyARVGuZseqQmgdfd1mpJQodjTi54QKw7VFOXXWrD8TINhwkaK0YA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/classify/61eb972ca4deae8987409535",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"classify",
+						"61eb972ca4deae8987409535"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new classify",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODMyNTk0LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MzI1OTQsImV4cCI6MTY0MjgzNjE5NCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.mUbgoB8rNUCfOFZkoETwAv0hcFJYzo8hCABR2VQWTWMP2NLPaAhsK5ang5Bc9dAUNoIc3gLLcNB6kNYl6RruVNMSNU5kEOepTdzisOxPxSJOrTw-xOOT8V5LwA9KLG4Lwr3M_C4xdy_og52cA_bajBK3Mn5N1j0d0bxf_K_iesXOjRuuXqObp16ucJK61X4P2S6Pad4dHj7xFpIEkOXEjhanGYNQa8QqkuqcCL2TbwyrGJ_EfWp7wbu03tpzNCrM7LC1wsxf1gbzCbVOFlMZrmW8A_6XyeUeNfyARVGuZseqQmgdfd1mpJQodjTi54QKw7VFOXXWrD8TINhwkaK0YA",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": 10,\n    \"displayName\": \"Màu đỏ\",\n    \"price\": 1000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/classify/61eb972ca4deae8987409535",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"classify",
+						"61eb972ca4deae8987409535"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
