@@ -64,7 +64,7 @@ API.put('/classify/:cid', json(), ClassifyController.update);
 API.get('/order', OrderController.index);
 API.get('/order/:oid', OrderController.show);
 API.post('/order', json(), OrderController.create);
-API.put('/order/:oid', json(), OrderController.update);
+// API.put('/order/:oid', json(), OrderController.update);
 
 // API upload file
 API.post('/upload', UploadFileController.create);

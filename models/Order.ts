@@ -4,8 +4,8 @@ import { model, Model, Schema, Document } from "mongoose";
 interface Infor {
     pid: string;
     displayName: string;
-    photos: string[];
-    address: string;
+    photos?: string[];
+    address?: string;
     classify: {
         cid: string;
         price: number,
@@ -35,7 +35,7 @@ const OrderSchema = new Schema({
     infor: [{
         pid: { type: String, required: true },
         displayName: { type: true },
-        photos: [{ type: String, required: true }],
+        photos: [{ type: String, }],
         address: { type: String },
         classify: {
             type: {
