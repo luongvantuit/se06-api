@@ -19,10 +19,11 @@ __Project is product build base API for eCommerce website use firebase admin sup
 - [x] Add user's card information.
 - [ ] Verify user's card information.
 - [ ] Look for information product.
+- [ ] Ratting product api.
 
 ## __Database__
 
-<img width="969" alt="Screen Shot 2022-01-23 at 03 25 24" src="https://user-images.githubusercontent.com/87352056/150654324-589aa67b-e856-451e-a796-2e7e6eceabed.png">
+<img alt="Screen Shot 2022-01-23 at 03 25 24" src="https://user-images.githubusercontent.com/87352056/150654324-589aa67b-e856-451e-a796-2e7e6eceabed.png">
 
 ## __How to use project__
 
