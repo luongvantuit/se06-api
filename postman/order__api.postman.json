@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "9061b124-ee83-420b-b2be-e795ee5e158b",
+		"name": "Order API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add new order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODc2NzkwLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4NzY3OTAsImV4cCI6MTY0Mjg4MDM5MCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.lNi0G9YssCkOLSt1QiQjLiNmVwdg1pYXGgl6uy4ePVMcIOeVhQW5A1q_FeNu6TgqJx5k4QWKI-nr373NHJCPwBpe98du0To1se9PySUm2GBj_XAmsqVLL4idY0XyQEtCIdgwqkUqO3SUpzaULnWf_nScmZIYYu99-kHj9WtEHVHbLmzE-nsbbFuVif-wtJt2Vj8w_pWT59KJA7g6k7KJ4JvpI8m7tim66kXMJTtQS4_4xeiRjHksZcmfUpUgy1WWMm37F_hboGUE_tvboMgJRDM2obwK_ns-19rLonQ3OZ_eNFO-QH3dUR1597vbGXsH6f0JdKtotKwh2PMprydXNw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": [\"61ec525fe9331ea0070594d5\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/order",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all information orders of user with id token",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODc3NjM4LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4Nzc2MzgsImV4cCI6MTY0Mjg4MTIzOCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.Vq-klpeKkOMBBmRi2GYpEdxezoDvV_f15gTNI_gr7DeWA9eoRmUpxuHnb3QhGSIX2bPzCA0DQ0ARr7S3daPrNJ-NdPyrQFDCUARnzj1lelT83uH0kEL0vzy3j_uamHccq8MPSA6G9JxKhnJk-MJOxn3mSoWystWWDG3XdP0qBtk5fvC-mdn1Nbtjn_LQmxaE7NY_LlRIw4TXXPZKWrBM45oJ_XzVu6IMmPIzJ7HLijVC-hmPaIJW-lg9pCNNcBgjwCBBtLOHBQy-PMOsMHu7CQUTidFKqOe20cP2Fq3ukAoyDm-F2FCnjGyqGhWh9kBBEZiXmesgsU3PEn7IeNWBqg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/order",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get information of order with order id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODc3NjM4LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4Nzc2MzgsImV4cCI6MTY0Mjg4MTIzOCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.Vq-klpeKkOMBBmRi2GYpEdxezoDvV_f15gTNI_gr7DeWA9eoRmUpxuHnb3QhGSIX2bPzCA0DQ0ARr7S3daPrNJ-NdPyrQFDCUARnzj1lelT83uH0kEL0vzy3j_uamHccq8MPSA6G9JxKhnJk-MJOxn3mSoWystWWDG3XdP0qBtk5fvC-mdn1Nbtjn_LQmxaE7NY_LlRIw4TXXPZKWrBM45oJ_XzVu6IMmPIzJ7HLijVC-hmPaIJW-lg9pCNNcBgjwCBBtLOHBQy-PMOsMHu7CQUTidFKqOe20cP2Fq3ukAoyDm-F2FCnjGyqGhWh9kBBEZiXmesgsU3PEn7IeNWBqg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/order/61ec51b89371c7ffc1ea4caa",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"order",
+						"61ec51b89371c7ffc1ea4caa"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -11,7 +11,7 @@ interface Infor {
         price: number,
         displayName: string,
         quantity: number,
-        description: string,
+        description?: string,
     };
 }
 
@@ -29,12 +29,13 @@ interface OrderModel extends Document, IOrder {
 
 
 const OrderSchema = new Schema({
-    uid: { type: String, required: true },
+    uid: { type: String },
     status: { type: String, enum: ['wait-for-confirmation', 'canceled', 'being-transported', 'done', 'delivered'], required: true },
     date: { type: Date },
+    amount: { type: Number, required: true },
     infor: [{
         pid: { type: String, required: true },
-        displayName: { type: true },
+        displayName: { type: String },
         photos: [{ type: String, }],
         address: { type: String },
         classify: {
@@ -43,7 +44,7 @@ const OrderSchema = new Schema({
                 price: { type: Number, required: true },
                 displayName: { type: String, required: true },
                 quantity: { type: Number, required: true },
-                description: { type: String, required: true },
+                description: { type: String },
             },
             required: true
         }
