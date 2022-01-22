@@ -9,10 +9,7 @@ import Token from "../perform/Token";
 
 class CardController extends IController {
 
-    private TAG: string = "CARDCONTROLLER";
-
     public async index(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         await Token.verify(req, res, async (req, res, auth) => {
             const cards = await Card.find({ uid: auth.uid })
             const responseCards: Array<{ _id: string } & ICard> = [];
@@ -37,7 +34,6 @@ class CardController extends IController {
     }
 
     public async create(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const {
             cardNumber,
             cvv,
@@ -80,10 +76,15 @@ class CardController extends IController {
                         uid: auth.uid,
                     })
                     const error = await nCard.validateSync();
-                    if (error !== null) {
+                    if (error) {
                         const response: any = {
                             error: true,
-                            data: error,
+                            data: {
+                                error: error,
+                                cardNumber: cardNumber,
+                                cvv: cvv,
+                                ownerName: ownerName
+                            },
                             path: req.path,
                             method: req.method,
                             status: HttpStatusCode.BAD_REQUEST,
@@ -173,7 +174,7 @@ class CardController extends IController {
                     } else {
                         const rCard = await oCard.save();
                         const responseCard: { _id: string } & ICard = {
-                            cardNumber: rCard.cardNumber.substring(0, 3),
+                            cardNumber: `${rCard.cardNumber.substring(0, 3)} *** ****`,
                             ownerName: rCard.ownerName,
                             _id: rCard._id.toJSON(),
                         }
@@ -185,6 +186,7 @@ class CardController extends IController {
                             path: req.path,
                             msg: 'update information card success!'
                         }
+                        Log.default(response);
                         await res.status(HttpStatusCode.OK).send(response);
                     }
                 }
@@ -229,7 +231,7 @@ class CardController extends IController {
                 } else {
                     const oldCard = await card.delete();
                     const responseCard: { _id: string } & ICard = {
-                        cardNumber: oldCard.cardNumber.substring(0, 3),
+                        cardNumber: `${oldCard.cardNumber.substring(0, 3)} *** ****`,
                         ownerName: oldCard.ownerName,
                         _id: oldCard._id.toString(),
                     }
@@ -249,7 +251,6 @@ class CardController extends IController {
     }
 
     public async show(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid)) {
             const response: any = {
@@ -285,7 +286,7 @@ class CardController extends IController {
                     await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
                     const responseCard: { _id: string } & ICard = {
-                        cardNumber: card.cardNumber.substring(0, 3),
+                        cardNumber: `${card.cardNumber.substring(0, 3)} *** ****`,
                         ownerName: card.ownerName,
                         _id: card._id.toString(),
                     }

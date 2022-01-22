@@ -135,7 +135,7 @@ class ShopController extends IController {
     }
 
     public async update(req: IRequest, res: IResponse) {
-        const { sid } = await req.body;
+        const { sid } = await req.params;
         const {
             description,
             displayName,
