@@ -8,6 +8,7 @@ interface IClassify {
     uid: string,
     sid: string,
     pid: string,
+    deleted: boolean
 }
 
 interface ClassifyModel extends Document, IClassify {
@@ -21,7 +22,8 @@ const ClassifyShema = new Schema({
     displayName: { type: String, required: true },
     quantily: { type: Number, required: true },
     description: { type: String, required: true },
-    pid: { type: String, required: true }
+    pid: { type: String, required: true },
+    deleted: { type: Boolean, default: false }
 })
 
 const Classify: Model<ClassifyModel> = model<ClassifyModel>('classify', ClassifyShema);

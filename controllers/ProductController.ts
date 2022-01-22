@@ -24,8 +24,8 @@ class ProductController extends IController {
         const mPage: number = Number(page ?? 0);
         if (!sid) {
             if (!category) {
-                const products = await Product.find().skip(mLimit * mPage).limit(mLimit);
-                const countDocuments: number = await Product.countDocuments();
+                const products = await Product.find({ deleted: false }).skip(mLimit * mPage).limit(mLimit);
+                const countDocuments: number = await (await Product.find({ deleted: false })).length;
                 const maxPage: number = Math.ceil(countDocuments / mLimit);
                 const response = {
                     error: false,
@@ -42,11 +42,12 @@ class ProductController extends IController {
                 const products = await Product.aggregate([
                     {
                         $match: {
-                            classifies: {
+                            categories: {
                                 "$elemMatch": {
                                     "$eq": category,
                                 }
-                            }
+                            },
+                            deleted: false
                         },
                         $skip: mLimit * mPage,
                         $limit: mLimit,
@@ -55,11 +56,12 @@ class ProductController extends IController {
                 const allProducts = await Product.aggregate([
                     {
                         $match: {
-                            classifies: {
+                            categories: {
                                 "$elemMatch": {
                                     "$eq": category,
                                 }
-                            }
+                            },
+                            deleted: false
                         },
                     },
                 ]);
@@ -79,8 +81,8 @@ class ProductController extends IController {
             }
         } else {
             if (!category) {
-                const products = await Product.find({ sid: sid }).skip(mLimit * mPage).limit(mLimit);
-                const countDocuments: number = products.length;
+                const products = await Product.find({ sid: sid, deleted: false }).skip(mLimit * mPage).limit(mLimit);
+                const countDocuments: number = await (await Product.find({ sid: sid, deleted: false })).length;
                 const maxPage: number = Math.ceil(countDocuments / mLimit);
                 const response = {
                     error: false,
@@ -97,11 +99,12 @@ class ProductController extends IController {
                 const products = await Product.aggregate([
                     {
                         $match: {
-                            classifies: {
+                            categories: {
                                 "$elemMatch": {
                                     "$eq": category,
                                 }
                             },
+                            deleted: false,
                             sid: sid
                         },
                         $skip: mLimit * mPage,
@@ -111,11 +114,12 @@ class ProductController extends IController {
                 const allProducts = await Product.aggregate([
                     {
                         $match: {
-                            classifies: {
+                            categories: {
                                 "$elemMatch": {
                                     "$eq": category,
                                 }
                             },
+                            deleted: false,
                             sid: sid
                         },
                     },
@@ -162,7 +166,7 @@ class ProductController extends IController {
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
-                const shop = await Shop.findById(sid);
+                const shop = await Shop.findOne({ _id: sid, deleted: false });
                 if (!shop || shop.uid !== auth.uid) {
                     const response = {
                         error: true,
@@ -210,7 +214,7 @@ class ProductController extends IController {
                                 await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                                 return;
                             } else {
-                                const clazz = await Classify.findOne({ _id: product.classifies[index] })
+                                const clazz = await Classify.findOne({ _id: product.classifies[index], deleted: false })
                                 if (clazz) {
                                     quantily += clazz.quantily;
                                 } else {
@@ -281,7 +285,7 @@ class ProductController extends IController {
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
-                const shop = await Shop.findById(sid);
+                const shop = await Shop.findOne({ _id: sid, deleted: false });
                 if (!shop || shop.uid !== auth.uid) {
                     const response = {
                         error: true,
@@ -296,7 +300,7 @@ class ProductController extends IController {
                     Log.default(response);
                     await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
-                    const product = await Product.findById(pid);
+                    const product = await Product.findOne({ _id: pid, deleted: false });
                     if (!product) {
                         const response = {
                             error: true,
@@ -311,7 +315,8 @@ class ProductController extends IController {
                         Log.default(response);
                         await res.status(HttpStatusCode.NOT_FOUND).send(response);
                     } else {
-                        const oldProduct = await product.delete();
+                        product.deleted = true;
+                        const oldProduct = await product.save();
                         const response = {
                             error: false,
                             data: oldProduct,

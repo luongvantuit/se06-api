@@ -16,7 +16,7 @@ class ShopController extends IController {
         const shops = await Shop.find({ uid: uid, deleted: false });
         const maxPage = Math.ceil(shops.length / mLimit);
         const responseShops: Array<any> = []
-        for (let index: number = mLimit * mPage; index < shops.length; index++) {
+        for (let index: number = mLimit * mPage; index < shops.length && (index < mLimit * mPage + mLimit); index++) {
             responseShops.push(shops[index])
         }
         const response: any = {

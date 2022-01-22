@@ -10,7 +10,7 @@ class ClassifyController extends IController {
 
     public async index(req: IRequest, res: IResponse) {
         const { pid } = await req.params;
-        const classifies = await Classify.find({ pid: pid });
+        const classifies = await Classify.find({ pid: pid, deleted: false });
         const response = {
             error: false,
             status: HttpStatusCode.OK,
@@ -28,17 +28,32 @@ class ClassifyController extends IController {
     public async show(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
         if (ObjectId.isValid(cid)) {
-            const classify = await Classify.findOne({ _id: cid });
-            const response = {
-                error: false,
-                status: HttpStatusCode.OK,
-                path: req.path,
-                method: req.method,
-                data: classify,
-                msg: `get success information of classify id: ${cid}`
-            };
-            Log.default(response);
-            res.status(HttpStatusCode.OK).send(response);
+            const classify = await Classify.findOne({ _id: cid, deleted: false });
+            if (classify) {
+                const response = {
+                    error: false,
+                    status: HttpStatusCode.OK,
+                    path: req.path,
+                    method: req.method,
+                    data: classify,
+                    msg: `get success information of classify id: ${cid}`
+                };
+                Log.default(response);
+                res.status(HttpStatusCode.OK).send(response);
+            } else {
+                const response = {
+                    error: true,
+                    status: HttpStatusCode.NOT_FOUND,
+                    path: req.path,
+                    method: req.method,
+                    data: {
+                        cid: cid
+                    },
+                    msg: `not found information of classify id: ${cid}`
+                };
+                Log.default(response);
+                res.status(HttpStatusCode.OK).send(response);
+            }
         } else {
             const response = {
                 error: true,
