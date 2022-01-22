@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "55cfa965-a9da-4f39-a3be-cad2fa3c6653",
+		"name": "Card API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Delete card",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/card/61eb5b958211ce463cb82ca7",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"card",
+						"61eb5b958211ce463cb82ca7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update card",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cardNumber\": \"kmmk\",\n    \"cvv\": \"fdf\",\n    \"ownerName\":\"LvT\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/card",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create record card",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cardNumber\": \"kmmk\",\n    \"cvv\": \"fkdmf\",\n    \"ownerName\":\"kfdm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/card",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get card by id card",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/card/61eb5b958211ce463cb82ca7",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"card",
+						"61eb5b958211ce463cb82ca7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all cards",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODEzOTcyLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MTM5NzIsImV4cCI6MTY0MjgxNzU3MiwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.NwQlARmhDWcRDkRfda_t1sOXMepKYAuFg7qdfKp8sHdV9Lw2qMccbW7skKBDwCVdeYyq0T_YLfx_CcW1OCr0qfu1lcT-_i99glaJ-btCnvBV0CUKYiH6TRYnxOP3cHvBanuhhDsy_xLF63jFywKaPzQrcDIKjZ6FyuMtb0SPLNb3Scm8lb7gyyCqpxuPYG87cGocXP-Sv6p5b7krZvbJjQMD1k_yFsuzFHUOVJxKGN3cUUEzwjJKbq4meqko-sJg6JbJQRmlY2ESweFmKIeHI4-XxQPP8Kq5Ris1HgKjyVGU8aeTfgsXQH6CHCiEmYNlH1wgVvivtDVQ9_w2AJHQtA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/cards",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"cards"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

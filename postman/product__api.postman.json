@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "b6319167-3523-48aa-9ce8-b1fa2e3fe9dc",
+		"name": "Product API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create new product to shop with shop id",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODI4NTYwLCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4Mjg1NjAsImV4cCI6MTY0MjgzMjE2MCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.euEQmI5b0yJ2Kw1QpRKggEQnrZZKnNvRQ-ntXUSQvObwC1SzqCbw1eo22FRottgMBt6ryTAv-l4Kv-bI8WqENmLSD3V5JGJkqqONoJZikHOH4RdsmXpCwyjh_LyCar_tOsBOZcCrQ2NFOoEAAi0UL60ww_J_miNu2akWjvpkTm7P_Zs2cLdKL8dQ3VCzM5YsPRgszyab3k78nos0kRSDVVk2WUuhJBBUljt7E40mODDX-b5VVtgOVXUPQqFuY7AJy4KMfGDtWw-CWOgD3v6Rf1vo7wWkMQtlEMjM5qP1Xg2OfF232ejegqW5ebn2toTKKt4PM2GiQ-JXyvvV9SfLUg",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"description\": \"Kẹo ngọt làm ta đắm say :v\",\n    \"displayName\": \"Kẹo mút\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/product/61eb96f1c1be3a107496511c",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"product",
+						"61eb96f1c1be3a107496511c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get information all products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/products",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update information of product with product id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODI2OTE4LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MjY5MTgsImV4cCI6MTY0MjgzMDUxOCwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.EweSJKlMMX7YfmAOKOcjCmJP-MunwZmI3nQ3JiWFf_AAGEsiymWb7HXhrUE_XYgPd803Kjx_m8YPDLgRs9PwHkkX4yyTLSc-Scaj2OrH5wLO4gXffs6ziEsrHdwTSrfA7DMX6uRW2U0GCWhHVPBkYMcT3cHpWmQtCeUBvPtSIpSLclm1VvKws--gstG7XbW4HJ1xlyR7YTheYNBW3kka1eC7m23PhtRteXQo5UE4Jf4qW4lNNQsJ9PkWcsULssTu1_X7N6K3BOHuCRlXMbievkjfO3I73qMJy2DVq3dix8Ab2E1BFGlZwpMkOP4H78mWha1b3k_hdrbOSbX80zFetA",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"displayName\":\"Hello World\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/product/61eb88d05434107ff8ccc270",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"product",
+						"61eb88d05434107ff8ccc270"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get information all products of shop with shop id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/products/61eb932b42b9112b4a6ede71",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"products",
+						"61eb932b42b9112b4a6ede71"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get information of product with product id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/product/61eb932b42b9112b4a6ede71",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"product",
+						"61eb932b42b9112b4a6ede71"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product with product id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjQwMTU0NmJkMWRhMzA0ZDc2NGNmZWUzYTJhZTVjZDBlNGY2ZjgyN2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vc2UwNi1zYWdhIiwiYXVkIjoic2UwNi1zYWdhIiwiYXV0aF90aW1lIjoxNjQyODI1MDU1LCJ1c2VyX2lkIjoic1ZQUlMya25XRmJOYXhjekxRbkdYbnBpd0M1MiIsInN1YiI6InNWUFJTMmtuV0ZiTmF4Y3pMUW5HWG5waXdDNTIiLCJpYXQiOjE2NDI4MjUwNTUsImV4cCI6MTY0MjgyODY1NSwiZW1haWwiOiJsdW9uZ3ZhbnR1aXRAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImx1b25ndmFudHVpdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.BkfTkep_2ahySlZD17vc8KitbTIk8xzYDvx1fw2Zyx6c2aRdT18VB3YuvsltnHETDsks-1geS_iHlTaKNLC_mb7RjoEB5HDQnCZkT5t6NKVFVpdVmi6EnCjydLx_2mW5STX0UdlmcAbeDxVVlSuqB9FlzATzyxjGYieAIKQXaQSG3h0XxcIEVKIqYEeYWoi17A7DCE9mQu7x5buHlbMKnoXLViUiPoj5fVzfIqVXqsNDztDDR7fcWOeNNKOEXzas0I1DUZae-7wF9FJvlrM3PE9SIGh3_PxRaPnfQe45crOcA6t4Cqzf3s2asqeV3c4IpskU1sLhYtDkaVX3t7WxNw",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{SCHEMA}}://{{HOST}}:{{PORT}}/api/product/61eb88c240fb8805d2fa53d0",
+					"protocol": "{{SCHEMA}}",
+					"host": [
+						"{{HOST}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"product",
+						"61eb88c240fb8805d2fa53d0"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
