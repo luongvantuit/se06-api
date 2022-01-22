@@ -177,8 +177,53 @@ class ClassifyController extends IController {
 
 
 
-    public destroy(req: IRequest, res: IResponse) {
-
+    public async destroy(req: IRequest, res: IResponse) {
+        const { cid } = await req.params;
+        if (ObjectId.isValid(cid)) {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const classify = await Classify.findOne({ _id: cid, deleted: false });
+                if (!classify || classify.uid !== auth.uid) {
+                    const response = {
+                        error: true,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            cid: cid
+                        },
+                        status: HttpStatusCode.NOT_FOUND,
+                        msg: `not found information of classify with cid: ${cid}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
+                } else {
+                    classify.deleted = true;
+                    const oldClassify = await classify.save();
+                    const response = {
+                        error: true,
+                        path: req.path,
+                        method: req.method,
+                        data: oldClassify,
+                        status: HttpStatusCode.OK,
+                        msg: `delete success classify with cid: ${cid}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.OK).send(response);
+                }
+            })
+        } else {
+            const response = {
+                error: true,
+                path: req.path,
+                method: req.method,
+                data: {
+                    cid: cid
+                },
+                status: HttpStatusCode.BAD_REQUEST,
+                msg: `param format wrong! with cid: ${cid}`
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+        }
     }
 
 }
