@@ -11,10 +11,7 @@ import Token from "../perform/Token";
 
 class CartController extends IController {
 
-    private TAG: string = "CARTCONTROLLER"
-
     public async index(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         await Token.verify(req, res, async (req, res, auth) => {
             const carts = await Cart.find({ uid: auth.uid });
             const response: any = {
@@ -31,7 +28,6 @@ class CartController extends IController {
     }
 
     public async show(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         if (!ObjectId.isValid(cid)) {
             const response: any = {
@@ -86,7 +82,6 @@ class CartController extends IController {
      * @param res 
      */
     public async create(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { pid } = await req.params;
         const { quantily, classify } = await req.body;
         if (!ObjectId.isValid(pid)) {
@@ -393,7 +388,6 @@ class CartController extends IController {
      * @param res 
      */
     public async destroy(req: IRequest, res: IResponse) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { cid } = await req.params;
         await Token.verify(req, res, async (req, res, auth) => {
             if (!ObjectId.isValid(cid)) {
