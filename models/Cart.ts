@@ -4,7 +4,7 @@ interface ICart {
     pid: string;
     uid: string;
     quantily: number;
-    classify?: number;
+    classify: string;
     date: Date
 }
 
@@ -16,7 +16,7 @@ const CartSchema = new Schema({
     uid: { type: String, required: true },
     pid: { type: String, required: true },
     quantily: { type: Number, required: true, min: 0 },
-    classify: { type: Number },
+    classify: { type: String, required: true },
     date: { type: Date },
 });
 

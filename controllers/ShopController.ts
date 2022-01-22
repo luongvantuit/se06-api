@@ -13,7 +13,7 @@ class ShopController extends IController {
         const { limit, page } = await req.query;
         const mLimit: number = Number(limit ?? 10);
         const mPage: number = Number(page ?? 0);
-        const shops = await Shop.find({ uid: uid });
+        const shops = await Shop.find({ uid: uid, deleted: false });
         const maxPage = Math.ceil(shops.length / mLimit);
         const responseShops: Array<any> = []
         for (let index: number = mLimit * mPage; index < shops.length; index++) {
@@ -48,7 +48,7 @@ class ShopController extends IController {
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
-            const shop = await Shop.findById(sid);
+            const shop = await Shop.findOne({ _id: sid, deleted: false });
             if (!shop) {
                 const response: any = {
                     error: true,
@@ -157,7 +157,7 @@ class ShopController extends IController {
                 Log.default(response);
                 await res.status(HttpStatusCode.BAD_REQUEST).send(response);
             } else {
-                const oldShop = await Shop.findById(sid)
+                const oldShop = await Shop.findOne({ _id: sid, deleted: false });
                 if (!oldShop || oldShop.uid !== auth.uid) {
                     const response: any = {
                         error: true,
@@ -229,7 +229,7 @@ class ShopController extends IController {
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
-                const shop = await Shop.findById(sid);
+                const shop = await Shop.findOne({ _id: sid, deleted: false });
                 if (!shop || shop.uid !== auth.uid) {
                     const response: any = {
                         error: true,
@@ -244,7 +244,8 @@ class ShopController extends IController {
                     Log.default(response);
                     await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
-                    const oldShop = await shop.delete();
+                    shop.deleted = true;
+                    const oldShop = await shop.save();
                     const response: any = {
                         error: false,
                         data: oldShop,

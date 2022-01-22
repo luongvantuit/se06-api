@@ -7,6 +7,7 @@ interface IShop {
     displayPhotoCover?: string,
     created: Date,
     description?: string,
+    deleted: boolean
 }
 
 interface ShopModel extends IShop, Document {
@@ -20,6 +21,7 @@ const ShopSchema = new Schema({
     displayPhotoCover: { type: String },
     created: { type: Date, required: true },
     description: { type: String },
+    deleted: { type: Boolean, required: true, default: false }
 })
 
 
