@@ -20,7 +20,7 @@ class ProductController extends IController {
             page,
             category
         } = await req.query;
-        const mLimit: number = Number(limit ?? 0);
+        const mLimit: number = Number(limit ?? 10);
         const mPage: number = Number(page ?? 0);
         if (!sid) {
             if (!category) {
@@ -39,33 +39,17 @@ class ProductController extends IController {
                 Log.default(response);
                 await res.status(HttpStatusCode.OK).send(response);
             } else {
-                const products = await Product.aggregate([
-                    {
-                        $match: {
-                            categories: {
-                                "$elemMatch": {
-                                    "$eq": category,
-                                }
-                            },
-                            deleted: false
-                        },
-                        $skip: mLimit * mPage,
-                        $limit: mLimit,
-                    },
-                ]);
-                const allProducts = await Product.aggregate([
-                    {
-                        $match: {
-                            categories: {
-                                "$elemMatch": {
-                                    "$eq": category,
-                                }
-                            },
-                            deleted: false
-                        },
-                    },
-                ]);
-                const countDocuments: number = allProducts.length;
+                const findProducts = await Product.find({ deleted: false });
+                const products: Array<any> = [];
+                for (let x = 0; x < findProducts.length && (x < mLimit * mPage + mLimit); x++) {
+                    var categories: string[] = findProducts[x].categories ?? [];
+                    for (let y = 0; y < categories.length; y++) {
+                        if (categories[y] === category) {
+                            products.push(findProducts[x]);
+                        }
+                    }
+                }
+                const countDocuments: number = products.length;
                 const maxPage: number = Math.ceil(countDocuments / mLimit);
                 const response = {
                     error: false,
@@ -96,35 +80,17 @@ class ProductController extends IController {
                 Log.default(response);
                 await res.status(HttpStatusCode.OK).send(response);
             } else {
-                const products = await Product.aggregate([
-                    {
-                        $match: {
-                            categories: {
-                                "$elemMatch": {
-                                    "$eq": category,
-                                }
-                            },
-                            deleted: false,
-                            sid: sid
-                        },
-                        $skip: mLimit * mPage,
-                        $limit: mLimit,
-                    },
-                ]);
-                const allProducts = await Product.aggregate([
-                    {
-                        $match: {
-                            categories: {
-                                "$elemMatch": {
-                                    "$eq": category,
-                                }
-                            },
-                            deleted: false,
-                            sid: sid
-                        },
-                    },
-                ]);
-                const countDocuments: number = allProducts.length;
+                const findProducts = await Product.find({ sid: sid, deleted: false });
+                const products: Array<any> = [];
+                for (let x = 0; x < findProducts.length && (x < mLimit * mPage + mLimit); x++) {
+                    var categories: string[] = findProducts[x].categories ?? [];
+                    for (let y = 0; y < categories.length; y++) {
+                        if (categories[y] === category) {
+                            products.push(findProducts[x]);
+                        }
+                    }
+                }
+                const countDocuments: number = products.length;
                 const maxPage: number = Math.ceil(countDocuments / mLimit);
                 const response = {
                     error: false,
@@ -268,49 +234,48 @@ class ProductController extends IController {
     }
 
     public async destroy(req: IRequest, res: IResponse) {
-        const { sid, pid } = await req.params;
-        if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
+        const { pid } = await req.params;
+        if (!ObjectId.isValid(pid)) {
             const response = {
                 error: true,
                 status: HttpStatusCode.BAD_REQUEST,
                 path: req.path,
                 method: req.method,
                 data: {
-                    pid: pid,
-                    sid: sid
+                    pid: pid
                 },
-                msg: `param format wrong! pid: ${pid}, sid: ${sid}`
+                msg: `param format wrong! pid: ${pid}`
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
-                const shop = await Shop.findOne({ _id: sid, deleted: false });
-                if (!shop || shop.uid !== auth.uid) {
+                const product = await Product.findOne({ _id: pid, deleted: false });
+                if (!product) {
                     const response = {
                         error: true,
                         status: HttpStatusCode.NOT_FOUND,
                         path: req.path,
                         method: req.method,
                         data: {
-                            sid: sid
+                            pid: pid,
                         },
-                        msg: `not found information of shop with sid: ${sid}`
+                        msg: `not found inforamtion of product with pid: ${pid}`
                     };
                     Log.default(response);
                     await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
-                    const product = await Product.findOne({ _id: pid, deleted: false });
-                    if (!product) {
+                    const shop = await Shop.findOne({ _id: product.sid, deleted: false });
+                    if (!shop || shop.uid !== auth.uid) {
                         const response = {
                             error: true,
                             status: HttpStatusCode.NOT_FOUND,
                             path: req.path,
                             method: req.method,
                             data: {
-                                pid: pid,
+                                pid: pid
                             },
-                            msg: `not found inforamtion of product with pid: ${pid}`
+                            msg: `not found information of shop`
                         };
                         Log.default(response);
                         await res.status(HttpStatusCode.NOT_FOUND).send(response);
@@ -329,12 +294,13 @@ class ProductController extends IController {
                         await res.status(HttpStatusCode.OK).send(response);
                     }
                 }
+
             });
         }
     }
 
     public async update(req: IRequest, res: IResponse) {
-        const { sid, pid } = await req.params;
+        const { pid } = await req.params;
         const {
             description,
             displayName,
@@ -344,52 +310,50 @@ class ProductController extends IController {
             categories,
             state,
         } = await req.body;
-        if (!ObjectId.isValid(sid) || !ObjectId.isValid(pid)) {
+        if (!ObjectId.isValid(pid)) {
             const response = {
                 error: true,
                 status: HttpStatusCode.BAD_REQUEST,
                 path: req.path,
                 method: req.method,
                 data: {
-                    pid: pid,
-                    sid: sid
+                    pid: pid
                 },
-                msg: `param format wrong! sid: ${sid}, pid: ${pid}`
+                msg: `param format wrong! pid: ${pid}`
             };
             Log.default(response);
             await res.status(HttpStatusCode.BAD_REQUEST).send(response);
         } else {
             await Token.verify(req, res, async (req, res, auth) => {
-                const shop = await Shop.findById(sid);
-                if (!shop || shop.uid !== auth.uid) {
+
+                const product = await Product.findById(pid);
+                if (!product) {
                     const response = {
                         error: true,
                         status: HttpStatusCode.NOT_FOUND,
                         path: req.path,
                         method: req.method,
                         data: {
-                            pid: pid,
-                            sid: sid
+                            pid: pid
                         },
-                        msg: `not found shop!`
+                        msg: `not found information of product with pid: ${pid}`
                     }
-                    Log.default(response);
+                    Log.default(response)
                     await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
-                    const product = await Product.findById(pid);
-                    if (!product) {
+                    const shop = await Shop.findOne({ _id: product.sid, deleted: false });
+                    if (!shop || shop.uid !== auth.uid) {
                         const response = {
                             error: true,
                             status: HttpStatusCode.NOT_FOUND,
                             path: req.path,
                             method: req.method,
                             data: {
-                                sid: sid,
                                 pid: pid
                             },
-                            msg: `not found information of product with pid: ${pid}`
+                            msg: `not found information of shop!`
                         }
-                        Log.default(response)
+                        Log.default(response);
                         await res.status(HttpStatusCode.NOT_FOUND).send(response);
                     } else {
                         product.description = description ?? product.description;

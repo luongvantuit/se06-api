@@ -33,8 +33,8 @@ API.get('/products', ProductController.index);
 API.get('/products/:sid', ProductController.index);
 API.get('/product/:pid', ProductController.show);
 API.post('/product/:sid', json(), ProductController.create);
-API.put('/product/:sid/:pid', json(), ProductController.update);
-API.delete('/product/:sid/:pid', json(), ProductController.destroy);
+API.put('/product/:pid', json(), ProductController.update);
+API.delete('/product/:pid', json(), ProductController.destroy);
 
 
 // API cart manager
