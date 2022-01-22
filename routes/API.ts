@@ -2,6 +2,7 @@ import { Router, json } from "express";
 import CardController from "../controllers/CardController";
 import CartController from "../controllers/CartController";
 import ClassifyController from "../controllers/ClassifyController";
+import OrderController from "../controllers/OrderController";
 import ProductController from "../controllers/ProductController";
 import ShopController from "../controllers/ShopController";
 import UploadFileController from "../controllers/UploadFileController";
@@ -55,6 +56,15 @@ API.get('/classify/:cid', ClassifyController.show);
 API.post('/classify/:pid', json(), ClassifyController.create);
 API.delete('/classify/:cid', ClassifyController.destroy);
 API.put('/classify/:cid', json(), ClassifyController.update);
+
+/**
+ * 
+ */
+
+API.get('/order', OrderController.index);
+API.get('/order/:oid', OrderController.show);
+API.post('/order', json(), OrderController.create);
+API.put('/order/:oid', json(), OrderController.update);
 
 // API upload file
 API.post('/upload', UploadFileController.create);
