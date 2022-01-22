@@ -4,7 +4,7 @@ interface IClassify {
     price: number,
     displayName: string,
     quantity: number,
-    description: string,
+    description?: string,
     uid: string,
     sid: string,
     pid: string,

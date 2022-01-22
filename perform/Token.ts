@@ -7,10 +7,8 @@ import HttpStatusCode from "./HttpStatusCode";
 
 class Token {
 
-    private TAG: string = "TOKEN"
 
     public async verify(req: IRequest, res: IResponse, successed: (req: IRequest, res: IResponse, auth: DecodedIdToken) => void) {
-        Log.warn(`${this.TAG}: ${Date.toString()}`);
         const { token } = await req.headers;
         if (!token) {
             const response: any = {

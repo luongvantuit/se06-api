@@ -82,30 +82,27 @@ class OrderController extends IController {
 
 
     public async create(req: IRequest, res: IResponse) {
-        const { data } = await req.params;
-        function verifyData(data: any): boolean {
-            if (!data || !Array.isArray(data) || data.length === 0) {
+        const { data } = await req.body;
+        function verifyData(value: any): boolean {
+            if (!value || !Array.isArray(value) || value.length === 0) {
                 return false;
             }
-            for (let index = 0; index < data.length; index++) {
-                if (!ObjectId.isValid(data[index])) {
-                    return false;
+            for (let index = 0; index < value.length; index++) {
+                for (let y = 0; y < index; y++) {
+                    if (!ObjectId.isValid(value[index]) || value[index] == value[y]) {
+                        return false;
+                    }
                 }
             }
             return true;
         }
         if (verifyData(data)) {
             await Token.verify(req, res, async (req, res, auth) => {
-                const order = new Order({
-                    uid: auth.uid,
-                    status: 'wait-for-confirmation',
-                    date: Date.now(),
-                    infor: []
-                });
-                var amount = 0;
+                const infor = [];
+                var amount: number = 0;
                 for (let index = 0; index < data.length; index++) {
                     const cid = data[index];
-                    const cart = await Cart.findOne({ _id: cid, uid: auth });
+                    const cart = await Cart.findOne({ _id: cid, uid: auth.uid });
                     if (cart) {
                         const product = await Product.findOne({ _id: cart.pid, deleted: false });
                         if (product) {
@@ -125,7 +122,7 @@ class OrderController extends IController {
                                     Log.default(response);
                                     return await res.status(HttpStatusCode.BAD_REQUEST).send(response);
                                 } else {
-                                    order.infor.push({
+                                    infor.push({
                                         address: product.address,
                                         displayName: product.displayName,
                                         classify: {
@@ -138,7 +135,7 @@ class OrderController extends IController {
                                         photos: product.photos,
                                         pid: cart.pid,
                                     });
-                                    amount += (classify.quantity * classify.price);
+                                    amount += (cart.quantity * classify.price);
                                 }
                             } else {
                                 const response = {
@@ -183,7 +180,13 @@ class OrderController extends IController {
                         return await res.status(HttpStatusCode.NOT_FOUND).send(response);
                     }
                 }
-                order.amount = amount;
+                const order = new Order({
+                    uid: auth.uid,
+                    status: 'wait-for-confirmation',
+                    date: Date.now(),
+                    infor: infor,
+                    amount: amount
+                });
                 const error = await order.validateSync();
                 if (error) {
                     const response = {
@@ -202,7 +205,7 @@ class OrderController extends IController {
                 } else {
                     for (let index = 0; index < data.length; index++) {
                         const cid = data[index];
-                        const cart = await Cart.findOne({ _id: cid, uid: auth });
+                        const cart = await Cart.findOne({ _id: cid, uid: auth.uid });
                         if (cart) {
                             const classify = await Classify.findOne({ _id: cart.classify, deleted: false });
                             if (classify) {
@@ -212,12 +215,13 @@ class OrderController extends IController {
                             await cart.delete();
                         }
                     }
+                    const resOrder = await order.save();
                     const reponse = {
                         error: false,
                         status: HttpStatusCode.OK,
                         path: req.path,
                         method: req.method,
-                        data: order,
+                        data: resOrder,
                         msg: `order product success!`,
                     }
                     Log.default(reponse);
