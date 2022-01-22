@@ -182,7 +182,7 @@ class ProductController extends IController {
                             } else {
                                 const clazz = await Classify.findOne({ _id: product.classifies[index], deleted: false })
                                 if (clazz) {
-                                    quantily += clazz.quantily;
+                                    quantily += clazz.quantity;
                                 } else {
                                     const response = {
                                         error: true,
@@ -389,7 +389,7 @@ class ProductController extends IController {
                                 } else {
                                     const clazz = await Classify.findOne({ _id: product.classifies[index] })
                                     if (clazz) {
-                                        quantily += clazz.quantily;
+                                        quantily += clazz.quantity;
                                     } else {
                                         const response = {
                                             error: true,

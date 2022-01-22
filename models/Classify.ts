@@ -3,7 +3,7 @@ import { Document, model, Model, Schema } from "mongoose";
 interface IClassify {
     price: number,
     displayName: string,
-    quantily: number,
+    quantity: number,
     description: string,
     uid: string,
     sid: string,
@@ -20,7 +20,7 @@ const ClassifyShema = new Schema({
     sid: { type: String, required: true },
     price: { type: Number, required: true },
     displayName: { type: String, required: true },
-    quantily: { type: Number, required: true },
+    quantity: { type: Number, required: true },
     description: { type: String },
     pid: { type: String, required: true },
     deleted: { type: Boolean, default: false }

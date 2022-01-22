@@ -52,9 +52,9 @@ API.put('/cart/:cid', json(), CartController.update);
 
 API.get('/classifies/:pid', ClassifyController.index);
 API.get('/classify/:cid', ClassifyController.show);
-API.post('/classify/create/:pid', json(), ClassifyController.create);
-API.delete('/classify/delete/:cid', ClassifyController.destroy);
-API.put('/classify/update/:cid', json(), ClassifyController.update);
+API.post('/classify/:pid', json(), ClassifyController.create);
+API.delete('/classify/:cid', ClassifyController.destroy);
+API.put('/classify/:cid', json(), ClassifyController.update);
 
 // API upload file
 API.post('/upload', UploadFileController.create);

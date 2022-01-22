@@ -6,6 +6,7 @@ import Shop from '../models/Shop';
 import HttpStatusCode from "../perform/HttpStatusCode";
 import { ObjectId } from "mongodb";
 import Log from "../middlewares/Log";
+import Product from "../models/Product";
 
 class ShopController extends IController {
     public async index(req: IRequest, res: IResponse) {
@@ -244,6 +245,7 @@ class ShopController extends IController {
                     Log.default(response);
                     await res.status(HttpStatusCode.NOT_FOUND).send(response);
                 } else {
+                    await Product.updateMany({ sid: sid }, { $set: { deleted: true } });
                     shop.deleted = true;
                     const oldShop = await shop.save();
                     const response: any = {

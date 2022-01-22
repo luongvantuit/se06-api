@@ -77,6 +77,7 @@ class ClassifyController extends IController {
 
     public async create(req: IRequest, res: IResponse) {
         const { pid } = await req.params;
+        const { price, displayName, quantity, description } = await req.body;
         if (ObjectId.isValid(pid)) {
             await Token.verify(req, res, async (req, res, auth) => {
                 const product = await Product.findOne({ _id: pid, deleted: false });
@@ -96,15 +97,14 @@ class ClassifyController extends IController {
                         Log.default(response);
                         await res.status(HttpStatusCode.NOT_FOUND).send(response);
                     } else {
-                        const { price, displayName, quantily, description } = await req.body;
                         const classify = new Classify({
                             price: price,
                             displayName: displayName,
-                            quantily: quantily,
+                            quantity: quantity,
                             description: description,
                             uid: auth.uid,
                             sid: shop._id.toString(),
-                            pid: product
+                            pid: product._id.toString(),
                         });
                         const error = await classify.validateSync();
                         if (error) {
@@ -115,7 +115,7 @@ class ClassifyController extends IController {
                                 data: {
                                     price: price,
                                     displayName: displayName,
-                                    quantily: quantily,
+                                    quantity: quantity,
                                     description: description,
                                     error: error
                                 },
@@ -173,7 +173,7 @@ class ClassifyController extends IController {
 
     public async update(req: IRequest, res: IResponse) {
         const { cid } = await req.params;
-        const { price, displayName, quantily, description } = await req.body;
+        const { price, displayName, quantity, description } = await req.body;
         if (ObjectId.isValid(cid)) {
             await Token.verify(req, res, async (req, res, auth) => {
                 const classify = await Classify.findOne({ _id: cid, deleted: false });
@@ -193,7 +193,7 @@ class ClassifyController extends IController {
                 } else {
                     classify.price = price ?? classify.price;
                     classify.displayName = displayName ?? classify.displayName;
-                    classify.quantily = quantily ?? classify.quantily;
+                    classify.quantity = quantity ?? classify.quantity;
                     classify.description = description ?? classify.description;
                     const error = await classify.validateSync();
                     if (error) {
@@ -204,7 +204,7 @@ class ClassifyController extends IController {
                             data: {
                                 price: price,
                                 displayName: displayName,
-                                quantily: quantily,
+                                quantity: quantity,
                                 description: description,
                                 error: error
                             },
