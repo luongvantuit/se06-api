@@ -171,8 +171,77 @@ class ClassifyController extends IController {
 
 
 
-    public update(req: IRequest, res: IResponse) {
-
+    public async update(req: IRequest, res: IResponse) {
+        const { cid } = await req.params;
+        const { price, displayName, quantily, description } = await req.body;
+        if (ObjectId.isValid(cid)) {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const classify = await Classify.findOne({ _id: cid, deleted: false });
+                if (!classify || classify.uid !== auth.uid) {
+                    const response = {
+                        error: true,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            cid: cid
+                        },
+                        status: HttpStatusCode.NOT_FOUND,
+                        msg: `not found information of classify with cid: ${cid}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
+                } else {
+                    classify.price = price ?? classify.price;
+                    classify.displayName = displayName ?? classify.displayName;
+                    classify.quantily = quantily ?? classify.quantily;
+                    classify.description = description ?? classify.description;
+                    const error = await classify.validateSync();
+                    if (error) {
+                        const response = {
+                            error: true,
+                            path: req.path,
+                            method: req.method,
+                            data: {
+                                price: price,
+                                displayName: displayName,
+                                quantily: quantily,
+                                description: description,
+                                error: error
+                            },
+                            status: HttpStatusCode.BAD_REQUEST,
+                            msg: `body property format wrong!`
+                        }
+                        Log.default(response);
+                        await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                    } else {
+                        const newClassify = await classify.save();
+                        const response = {
+                            error: false,
+                            path: req.path,
+                            method: req.method,
+                            data: newClassify,
+                            status: HttpStatusCode.OK,
+                            msg: `update new classify success!`
+                        }
+                        Log.default(response);
+                        await res.status(HttpStatusCode.OK).send(response);
+                    }
+                }
+            })
+        } else {
+            const response = {
+                error: true,
+                path: req.path,
+                method: req.method,
+                data: {
+                    cid: cid
+                },
+                status: HttpStatusCode.BAD_REQUEST,
+                msg: `param format wrong! with cid: ${cid}`
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+        }
     }
 
 
