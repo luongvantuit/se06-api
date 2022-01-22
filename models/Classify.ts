@@ -21,7 +21,7 @@ const ClassifyShema = new Schema({
     price: { type: Number, required: true },
     displayName: { type: String, required: true },
     quantily: { type: Number, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     pid: { type: String, required: true },
     deleted: { type: Boolean, default: false }
 })

@@ -4,7 +4,10 @@ import IRequest from "../interfaces/vendors/IRequest";
 import IResponse from "../interfaces/vendors/IResponse";
 import Log from "../middlewares/Log";
 import Classify from "../models/Classify";
+import Product from "../models/Product";
+import Shop from "../models/Shop";
 import HttpStatusCode from "../perform/HttpStatusCode";
+import Token from "../perform/Token";
 
 class ClassifyController extends IController {
 
@@ -72,8 +75,98 @@ class ClassifyController extends IController {
 
 
 
-    public create(req: IRequest, res: IResponse) {
-
+    public async create(req: IRequest, res: IResponse) {
+        const { pid } = await req.params;
+        if (ObjectId.isValid(pid)) {
+            await Token.verify(req, res, async (req, res, auth) => {
+                const product = await Product.findOne({ _id: pid, deleted: false });
+                if (product) {
+                    const shop = await Shop.findOne({ _id: product.sid, deleted: false });
+                    if (!shop || shop.uid !== auth.uid) {
+                        const response = {
+                            error: true,
+                            path: req.path,
+                            method: req.method,
+                            data: {
+                                pid: pid
+                            },
+                            status: HttpStatusCode.NOT_FOUND,
+                            msg: `not found information shop`
+                        }
+                        Log.default(response);
+                        await res.status(HttpStatusCode.NOT_FOUND).send(response);
+                    } else {
+                        const { price, displayName, quantily, description } = await req.body;
+                        const classify = new Classify({
+                            price: price,
+                            displayName: displayName,
+                            quantily: quantily,
+                            description: description,
+                            uid: auth.uid,
+                            sid: shop._id.toString(),
+                            pid: product
+                        });
+                        const error = await classify.validateSync();
+                        if (error) {
+                            const response = {
+                                error: true,
+                                path: req.path,
+                                method: req.method,
+                                data: {
+                                    price: price,
+                                    displayName: displayName,
+                                    quantily: quantily,
+                                    description: description,
+                                    error: error
+                                },
+                                status: HttpStatusCode.BAD_REQUEST,
+                                msg: `body property format wrong!`
+                            }
+                            Log.default(response);
+                            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+                        } else {
+                            const newClassify = await classify.save();
+                            const response = {
+                                error: false,
+                                path: req.path,
+                                method: req.method,
+                                data: newClassify,
+                                status: HttpStatusCode.OK,
+                                msg: `create new classify success!`
+                            }
+                            Log.default(response);
+                            await res.status(HttpStatusCode.OK).send(response);
+                        }
+                    }
+                } else {
+                    const response = {
+                        error: true,
+                        path: req.path,
+                        method: req.method,
+                        data: {
+                            pid: pid
+                        },
+                        status: HttpStatusCode.NOT_FOUND,
+                        msg: `not found information product with pid: ${pid}`
+                    }
+                    Log.default(response);
+                    await res.status(HttpStatusCode.NOT_FOUND).send(response);
+                }
+            });
+        } else {
+            const response = {
+                error: true,
+                path: req.path,
+                method: req.method,
+                data: {
+                    pid: pid
+                },
+                status: HttpStatusCode.BAD_REQUEST,
+                msg: `param format wrong! with pid: ${pid}`
+            }
+            Log.default(response);
+            await res.status(HttpStatusCode.BAD_REQUEST).send(response);
+        }
     }
 
 
