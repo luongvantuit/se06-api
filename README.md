@@ -7,3 +7,7 @@
 
 __Build Base API for eCommerce website__
 
+
+## __How to use project__
+
+[How to setup environments](https://github.com/luongvantuit/se06-api/blob/dev/environments.md)
